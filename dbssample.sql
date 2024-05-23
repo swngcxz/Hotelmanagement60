@@ -3,7 +3,11 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
+<<<<<<< HEAD
 -- Generation Time: May 23, 2024 at 04:34 AM
+=======
+-- Generation Time: May 15, 2024 at 10:40 PM
+>>>>>>> 73c327ef9b541923591189405b5e1ad56b257ebc
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -24,6 +28,7 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+<<<<<<< HEAD
 -- Table structure for table `tbl_cio`
 --
 
@@ -143,6 +148,8 @@ INSERT INTO `tbl_rooms` (`roomID`, `roomNo`, `roomType`, `price`, `r_status`) VA
 -- --------------------------------------------------------
 
 --
+=======
+>>>>>>> 73c327ef9b541923591189405b5e1ad56b257ebc
 -- Table structure for table `tbl_user`
 --
 
@@ -163,15 +170,28 @@ CREATE TABLE `tbl_user` (
 --
 
 INSERT INTO `tbl_user` (`u_id`, `u_fname`, `u_lname`, `u_email`, `u_username`, `u_password`, `u_type`, `u_status`, `u_image`) VALUES
+<<<<<<< HEAD
 (1009, 'Diane', 'Ragans', 'dianeraganas@gmail.com', 'diane', 'omkq6v5p1uSEzN1bCvdUtb380MF+dNOmfR110DpAPA4=', 'Admin', 'Active', ''),
 (1010, 'Josh', 'Canillas', '123swngcxz@gmail.com', '123swngcxz', '8NXUBbqEUiLFdRqRXzAvDEpx9y7BItfwFkpKLVGow+o=', 'User', 'Active', 'null'),
 (1011, 'Khan', 'Canillas', 'canillaskhan@gmail.com', 'khan123', 'yV/gq9UI10+GHTPbVB8ceDIEjGmvnTJeuwMRaBLtR4I=', 'User', 'Active', '');
+=======
+(1001, 'Josh', 'Canillas', '123swngcxz@gmail.com', '123swngcxz', 'XmCNe+ynUTyrGOajluqJTyxUZjedzB44iMwj1oWupgA=', 'Admin', 'Active', ''),
+(1002, 'test', 'test', 'test', 'test', 'XmCNe+ynUTyrGOajluqJTyxUZjedzB44iMwj1oWupgA=', 'Admin', 'Active', ''),
+(1003, 'user', 'user', 'user', 'user', 'XmCNe+ynUTyrGOajluqJTyxUZjedzB44iMwj1oWupgA=', 'User', 'Active', ''),
+(1004, 'first', 'first', 'first', 'first1', 'XmCNe+ynUTyrGOajluqJTyxUZjedzB44iMwj1oWupgA=', 'Admin', 'Pending', ''),
+(1005, 'second', 'second', 'second', '123123', 'XmCNe+ynUTyrGOajluqJTyxUZjedzB44iMwj1oWupgA=', 'Admin', 'Active', ''),
+(1006, 'third', 'third', 'third', 'third', 'XmCNe+ynUTyrGOajluqJTyxUZjedzB44iMwj1oWupgA=', 'Admin', 'Active', ''),
+(1007, 'samp', 'samp', 'samp', 'samp', 'XmCNe+ynUTyrGOajluqJTyxUZjedzB44iMwj1oWupgA=', 'Admin', 'Active', ''),
+(1008, 'josh', 'josh', 'josh', 'josh', 'XmCNe+ynUTyrGOajluqJTyxUZjedzB44iMwj1oWupgA=', 'Admin', 'Active', ''),
+(1009, 'diane', 'raganas', 'diane@gmail.com', 'diane', 'XmCNe+ynUTyrGOajluqJTyxUZjedzB44iMwj1oWupgA=', 'Admin', 'Active', 'src/userimages/maxresdefault.png');
+>>>>>>> 73c327ef9b541923591189405b5e1ad56b257ebc
 
 --
 -- Indexes for dumped tables
 --
 
 --
+<<<<<<< HEAD
 -- Indexes for table `tbl_cio`
 --
 ALTER TABLE `tbl_cio`
@@ -207,6 +227,8 @@ ALTER TABLE `tbl_rooms`
   ADD UNIQUE KEY `roomNo` (`roomNo`);
 
 --
+=======
+>>>>>>> 73c327ef9b541923591189405b5e1ad56b257ebc
 -- Indexes for table `tbl_user`
 --
 ALTER TABLE `tbl_user`
@@ -217,6 +239,7 @@ ALTER TABLE `tbl_user`
 --
 
 --
+<<<<<<< HEAD
 -- AUTO_INCREMENT for table `tbl_cio`
 --
 ALTER TABLE `tbl_cio`
@@ -269,6 +292,12 @@ ALTER TABLE `tbl_cio`
 ALTER TABLE `tbl_reservations`
   ADD CONSTRAINT `roomId` FOREIGN KEY (`roomId`) REFERENCES `tbl_rooms` (`roomID`),
   ADD CONSTRAINT `u_id` FOREIGN KEY (`u_id`) REFERENCES `tbl_user` (`u_id`);
+=======
+-- AUTO_INCREMENT for table `tbl_user`
+--
+ALTER TABLE `tbl_user`
+  MODIFY `u_id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1010;
+>>>>>>> 73c327ef9b541923591189405b5e1ad56b257ebc
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
