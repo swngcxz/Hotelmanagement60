@@ -19,6 +19,7 @@ public class Session {
     private String username;
     private String type;
     private String status;
+    private String pic;
     
     private Session()
     {
@@ -52,6 +53,14 @@ public class Session {
 
     public void setFname(String fname) {
         this.fname = fname;
+    }
+
+    public String getPic() {
+        return pic;
+    }
+
+    public void setPic(String pic) {
+        this.pic = pic;
     }
 
     public String getLname() {

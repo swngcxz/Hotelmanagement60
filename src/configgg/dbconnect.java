@@ -35,7 +35,7 @@ public class dbconnect {
             try{
                 PreparedStatement pst = connect.prepareStatement(sql);
                 pst.executeUpdate();
-                System.out.println("Inserted Successfully!");
+                 System.out.println("Inserted Successfully!");
                 pst.close();
                return true;
             }catch(SQLException ex){
@@ -43,14 +43,21 @@ public class dbconnect {
                return false;
             }
         }
+        
+
     
      //Function to update data
-        public void updateData(String sql){
+        public void updateData(String sql, boolean show){
             try{
                 PreparedStatement pst = connect.prepareStatement(sql);
                     int rowsUpdated = pst.executeUpdate();
                         if(rowsUpdated > 0){
-                            JOptionPane.showMessageDialog(null, "Data Updated Successfully!");
+                            if(show == false){
+                                System.out.println("Updated");
+                            
+                                 JOptionPane.showMessageDialog(null, "Data Updated Successfully!");
+                            }
+                           
                         }else{
                             System.out.println("Data Update Failed!");
                         }
@@ -60,5 +67,39 @@ public class dbconnect {
             }
         
         }
-    
-}
+        
+        public void updateData(String sql){
+            this.updateData(sql, true);
+        }
+        
+        
+        public void delete(int id, String table, String tblid, boolean show){
+            try{
+                
+                PreparedStatement pst = connect.prepareStatement("DELETE FROM "+table+" WHERE "+tblid+" = ? ");
+                pst.setInt(1, id);
+                int row = pst.executeUpdate();
+                if(row > 0 ){
+                    if(show == false){
+                        System.out.println("DELETED");
+                    }else{
+                         JOptionPane.showMessageDialog(null,"Deleted");
+                    }
+                   
+                }else{
+                    System.out.println("Failed");
+                }
+                
+            }catch(SQLException ex){
+                
+                JOptionPane.showMessageDialog(null,"Error" + ex.getMessage());
+            }
+        }
+        
+        public void delete(int id, String table, String tblid){
+            this.delete(id, table, tblid, true);
+        }
+  }
+
+
+
