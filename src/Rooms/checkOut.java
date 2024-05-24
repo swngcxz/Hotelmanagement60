@@ -30,7 +30,7 @@ import javax.swing.Timer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import net.proteanit.sql.DbUtils;
-import user.userForm;
+import register.userForm;
 
 /**
  *
@@ -122,7 +122,6 @@ public class checkOut extends javax.swing.JFrame {
         jLabel11 = new javax.swing.JLabel();
         p4 = new javax.swing.JPanel();
         jLabel13 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         pw = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
@@ -137,9 +136,6 @@ public class checkOut extends javax.swing.JFrame {
         jLabel21 = new javax.swing.JLabel();
         p9 = new javax.swing.JPanel();
         jLabel22 = new javax.swing.JLabel();
-        txttime = new javax.swing.JLabel();
-        jLabel25 = new javax.swing.JLabel();
-        txtdate = new javax.swing.JLabel();
         p10 = new javax.swing.JPanel();
         jLabel23 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
@@ -149,9 +145,6 @@ public class checkOut extends javax.swing.JFrame {
         cosTable = new javax.swing.JTable();
         p5 = new javax.swing.JPanel();
         jLabel15 = new javax.swing.JLabel();
-        jLabel16 = new javax.swing.JLabel();
-        prc = new javax.swing.JTextField();
-        jLabel28 = new javax.swing.JLabel();
         cnm1 = new javax.swing.JTextField();
         jLabel24 = new javax.swing.JLabel();
         cno1 = new javax.swing.JTextField();
@@ -166,6 +159,16 @@ public class checkOut extends javax.swing.JFrame {
         jLabel31 = new javax.swing.JLabel();
         cko = new javax.swing.JTextField();
         jLabel32 = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        jButton2 = new javax.swing.JButton();
+        jLabel17 = new javax.swing.JLabel();
+        id = new javax.swing.JTextField();
+        jLabel33 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        txttime = new javax.swing.JLabel();
+        jLabel25 = new javax.swing.JLabel();
+        txtdate = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -199,10 +202,10 @@ public class checkOut extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 974, Short.MAX_VALUE)
-                .addGap(62, 62, 62)
+                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 1076, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(181, 181, 181))
+                .addGap(131, 131, 131))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -231,10 +234,10 @@ public class checkOut extends javax.swing.JFrame {
         });
 
         jLabel11.setBackground(new java.awt.Color(0, 102, 153));
-        jLabel11.setFont(new java.awt.Font("Verdana", 1, 14)); // NOI18N
+        jLabel11.setFont(new java.awt.Font("Verdana", 1, 20)); // NOI18N
         jLabel11.setForeground(new java.awt.Color(255, 255, 255));
         jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel11.setText("CANCEL");
+        jLabel11.setText("PRINT");
 
         javax.swing.GroupLayout p3Layout = new javax.swing.GroupLayout(p3);
         p3.setLayout(p3Layout);
@@ -242,7 +245,7 @@ public class checkOut extends javax.swing.JFrame {
             p3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(p3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE)
+                .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
                 .addContainerGap())
         );
         p3Layout.setVerticalGroup(
@@ -253,7 +256,7 @@ public class checkOut extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jPanel2.add(p3, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 570, 210, 50));
+        jPanel2.add(p3, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 530, 320, 50));
 
         p4.setBackground(new java.awt.Color(0, 153, 0));
         p4.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -270,7 +273,7 @@ public class checkOut extends javax.swing.JFrame {
         });
 
         jLabel13.setBackground(new java.awt.Color(0, 102, 153));
-        jLabel13.setFont(new java.awt.Font("Verdana", 1, 14)); // NOI18N
+        jLabel13.setFont(new java.awt.Font("Verdana", 1, 20)); // NOI18N
         jLabel13.setForeground(new java.awt.Color(255, 255, 255));
         jLabel13.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel13.setText("CHECK-OUT");
@@ -301,34 +304,30 @@ public class checkOut extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jPanel2.add(p4, new org.netbeans.lib.awtextra.AbsoluteConstraints(750, 610, 320, 50));
-
-        jLabel8.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
-        jLabel8.setText("Time");
-        jPanel2.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(940, 80, -1, 28));
+        jPanel2.add(p4, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 600, 320, 50));
 
         jLabel10.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
         jLabel10.setText("RoomType:");
-        jPanel2.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(750, 250, 92, 28));
+        jPanel2.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(810, 110, 92, 28));
 
         pw.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jPanel2.add(pw, new org.netbeans.lib.awtextra.AbsoluteConstraints(-20, 90, -1, -1));
 
         jLabel6.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
         jLabel6.setText("Name:");
-        jPanel2.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(750, 158, 92, 40));
+        jPanel2.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 150, 92, 40));
 
         jLabel5.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
         jLabel5.setText("Room No.:");
-        jPanel2.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(750, 290, 110, 28));
+        jPanel2.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(810, 160, 110, 28));
 
         jLabel3.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
         jLabel3.setText("Contact No.:");
-        jPanel2.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(750, 210, 100, 28));
+        jPanel2.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 210, 100, 30));
 
         jLabel14.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
         jLabel14.setText("Total Price:");
-        jPanel2.add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(750, 518, -1, -1));
+        jPanel2.add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(810, 230, -1, -1));
 
         cnm.setBackground(new java.awt.Color(204, 255, 255));
         cnm.setFont(cnm.getFont().deriveFont(cnm.getFont().getSize()+3f));
@@ -338,11 +337,11 @@ public class checkOut extends javax.swing.JFrame {
                 cnmActionPerformed(evt);
             }
         });
-        jPanel2.add(cnm, new org.netbeans.lib.awtextra.AbsoluteConstraints(850, 150, 240, 40));
+        jPanel2.add(cnm, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 140, 240, 40));
 
         jLabel19.setForeground(new java.awt.Color(51, 51, 51));
         jLabel19.setText("_________________________________________");
-        jPanel2.add(jLabel19, new org.netbeans.lib.awtextra.AbsoluteConstraints(850, 160, 250, 50));
+        jPanel2.add(jLabel19, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 150, 250, 50));
 
         cno.setBackground(new java.awt.Color(204, 255, 255));
         cno.setFont(cno.getFont().deriveFont(cno.getFont().getSize()+3f));
@@ -352,11 +351,11 @@ public class checkOut extends javax.swing.JFrame {
                 cnoActionPerformed(evt);
             }
         });
-        jPanel2.add(cno, new org.netbeans.lib.awtextra.AbsoluteConstraints(850, 190, 240, 40));
+        jPanel2.add(cno, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 190, 240, 40));
 
         jLabel20.setForeground(new java.awt.Color(51, 51, 51));
         jLabel20.setText("_________________________________________");
-        jPanel2.add(jLabel20, new org.netbeans.lib.awtextra.AbsoluteConstraints(850, 200, 250, 50));
+        jPanel2.add(jLabel20, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 200, 250, 50));
 
         tprc.setBackground(new java.awt.Color(204, 255, 255));
         tprc.setFont(tprc.getFont().deriveFont(tprc.getFont().getSize()+3f));
@@ -366,11 +365,11 @@ public class checkOut extends javax.swing.JFrame {
                 tprcActionPerformed(evt);
             }
         });
-        jPanel2.add(tprc, new org.netbeans.lib.awtextra.AbsoluteConstraints(850, 510, 240, 30));
+        jPanel2.add(tprc, new org.netbeans.lib.awtextra.AbsoluteConstraints(910, 220, 240, 30));
 
         jLabel21.setForeground(new java.awt.Color(51, 51, 51));
         jLabel21.setText("_________________________________________");
-        jPanel2.add(jLabel21, new org.netbeans.lib.awtextra.AbsoluteConstraints(850, 520, 250, 40));
+        jPanel2.add(jLabel21, new org.netbeans.lib.awtextra.AbsoluteConstraints(910, 230, 250, 40));
 
         p9.setBackground(new java.awt.Color(102, 102, 102));
         p9.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -387,7 +386,7 @@ public class checkOut extends javax.swing.JFrame {
         });
 
         jLabel22.setBackground(new java.awt.Color(0, 102, 153));
-        jLabel22.setFont(new java.awt.Font("Verdana", 1, 14)); // NOI18N
+        jLabel22.setFont(new java.awt.Font("Verdana", 1, 20)); // NOI18N
         jLabel22.setForeground(new java.awt.Color(255, 255, 255));
         jLabel22.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel22.setText("CLEAR");
@@ -398,7 +397,7 @@ public class checkOut extends javax.swing.JFrame {
             p9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(p9Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel22, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+                .addComponent(jLabel22, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
                 .addContainerGap())
         );
         p9Layout.setVerticalGroup(
@@ -406,19 +405,7 @@ public class checkOut extends javax.swing.JFrame {
             .addComponent(jLabel22, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)
         );
 
-        jPanel2.add(p9, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 570, 220, 50));
-
-        txttime.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
-        txttime.setText("0");
-        jPanel2.add(txttime, new org.netbeans.lib.awtextra.AbsoluteConstraints(960, 110, -1, 28));
-
-        jLabel25.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
-        jLabel25.setText("Date");
-        jPanel2.add(jLabel25, new org.netbeans.lib.awtextra.AbsoluteConstraints(750, 80, -1, 28));
-
-        txtdate.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
-        txtdate.setText("0");
-        jPanel2.add(txtdate, new org.netbeans.lib.awtextra.AbsoluteConstraints(770, 110, -1, 28));
+        jPanel2.add(p9, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 460, 320, 50));
 
         p10.setBackground(new java.awt.Color(102, 102, 102));
         p10.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -435,7 +422,7 @@ public class checkOut extends javax.swing.JFrame {
         });
 
         jLabel23.setBackground(new java.awt.Color(0, 102, 153));
-        jLabel23.setFont(new java.awt.Font("Verdana", 1, 14)); // NOI18N
+        jLabel23.setFont(new java.awt.Font("Verdana", 1, 20)); // NOI18N
         jLabel23.setForeground(new java.awt.Color(255, 255, 255));
         jLabel23.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel23.setText("SELECT");
@@ -446,7 +433,7 @@ public class checkOut extends javax.swing.JFrame {
             p10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(p10Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel23, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+                .addComponent(jLabel23, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
                 .addContainerGap())
         );
         p10Layout.setVerticalGroup(
@@ -454,11 +441,11 @@ public class checkOut extends javax.swing.JFrame {
             .addComponent(jLabel23, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)
         );
 
-        jPanel2.add(p10, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 570, 220, 50));
+        jPanel2.add(p10, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 390, 320, 50));
 
         jLabel7.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
         jLabel7.setText("No. of Days:");
-        jPanel2.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(750, 408, 100, -1));
+        jPanel2.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 240, 100, -1));
 
         nod.setBackground(new java.awt.Color(204, 255, 255));
         nod.setFont(nod.getFont().deriveFont(nod.getFont().getSize()+3f));
@@ -468,15 +455,15 @@ public class checkOut extends javax.swing.JFrame {
                 nodActionPerformed(evt);
             }
         });
-        jPanel2.add(nod, new org.netbeans.lib.awtextra.AbsoluteConstraints(850, 400, 240, 30));
+        jPanel2.add(nod, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 230, 240, 30));
 
         jLabel27.setForeground(new java.awt.Color(51, 51, 51));
         jLabel27.setText("_________________________________________");
-        jPanel2.add(jLabel27, new org.netbeans.lib.awtextra.AbsoluteConstraints(850, 410, 250, 40));
+        jPanel2.add(jLabel27, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 240, 250, 40));
 
         jScrollPane1.setViewportView(cosTable);
 
-        jPanel2.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 90, 680, 400));
+        jPanel2.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 320, 760, 340));
 
         p5.setBackground(new java.awt.Color(102, 102, 102));
         p5.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -515,25 +502,7 @@ public class checkOut extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jPanel2.add(p5, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 510, 680, -1));
-
-        jLabel16.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
-        jLabel16.setText("Price:");
-        jPanel2.add(jLabel16, new org.netbeans.lib.awtextra.AbsoluteConstraints(750, 448, -1, -1));
-
-        prc.setBackground(new java.awt.Color(204, 255, 255));
-        prc.setFont(prc.getFont().deriveFont(prc.getFont().getSize()+3f));
-        prc.setBorder(null);
-        prc.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                prcActionPerformed(evt);
-            }
-        });
-        jPanel2.add(prc, new org.netbeans.lib.awtextra.AbsoluteConstraints(850, 440, 240, 30));
-
-        jLabel28.setForeground(new java.awt.Color(51, 51, 51));
-        jLabel28.setText("_________________________________________");
-        jPanel2.add(jLabel28, new org.netbeans.lib.awtextra.AbsoluteConstraints(850, 450, 250, 40));
+        jPanel2.add(p5, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 320, 320, 50));
 
         cnm1.setBackground(new java.awt.Color(204, 255, 255));
         cnm1.setFont(cnm1.getFont().deriveFont(cnm1.getFont().getSize()+3f));
@@ -543,11 +512,11 @@ public class checkOut extends javax.swing.JFrame {
                 cnm1ActionPerformed(evt);
             }
         });
-        jPanel2.add(cnm1, new org.netbeans.lib.awtextra.AbsoluteConstraints(850, 150, 240, 40));
+        jPanel2.add(cnm1, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 140, 240, 40));
 
         jLabel24.setForeground(new java.awt.Color(51, 51, 51));
         jLabel24.setText("_________________________________________");
-        jPanel2.add(jLabel24, new org.netbeans.lib.awtextra.AbsoluteConstraints(850, 160, 250, 50));
+        jPanel2.add(jLabel24, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 150, 250, 50));
 
         cno1.setBackground(new java.awt.Color(204, 255, 255));
         cno1.setFont(cno1.getFont().deriveFont(cno1.getFont().getSize()+3f));
@@ -557,11 +526,11 @@ public class checkOut extends javax.swing.JFrame {
                 cno1ActionPerformed(evt);
             }
         });
-        jPanel2.add(cno1, new org.netbeans.lib.awtextra.AbsoluteConstraints(850, 190, 240, 40));
+        jPanel2.add(cno1, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 190, 240, 40));
 
         jLabel26.setForeground(new java.awt.Color(51, 51, 51));
         jLabel26.setText("_________________________________________");
-        jPanel2.add(jLabel26, new org.netbeans.lib.awtextra.AbsoluteConstraints(850, 200, 250, 50));
+        jPanel2.add(jLabel26, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 200, 250, 50));
 
         rtp.setBackground(new java.awt.Color(204, 255, 255));
         rtp.setFont(rtp.getFont().deriveFont(rtp.getFont().getSize()+3f));
@@ -571,11 +540,11 @@ public class checkOut extends javax.swing.JFrame {
                 rtpActionPerformed(evt);
             }
         });
-        jPanel2.add(rtp, new org.netbeans.lib.awtextra.AbsoluteConstraints(850, 230, 240, 40));
+        jPanel2.add(rtp, new org.netbeans.lib.awtextra.AbsoluteConstraints(910, 90, 240, 40));
 
         jLabel29.setForeground(new java.awt.Color(51, 51, 51));
         jLabel29.setText("_________________________________________");
-        jPanel2.add(jLabel29, new org.netbeans.lib.awtextra.AbsoluteConstraints(850, 240, 250, 50));
+        jPanel2.add(jLabel29, new org.netbeans.lib.awtextra.AbsoluteConstraints(910, 100, 250, 50));
 
         rno.setBackground(new java.awt.Color(204, 255, 255));
         rno.setFont(rno.getFont().deriveFont(rno.getFont().getSize()+3f));
@@ -585,19 +554,19 @@ public class checkOut extends javax.swing.JFrame {
                 rnoActionPerformed(evt);
             }
         });
-        jPanel2.add(rno, new org.netbeans.lib.awtextra.AbsoluteConstraints(850, 270, 240, 40));
+        jPanel2.add(rno, new org.netbeans.lib.awtextra.AbsoluteConstraints(910, 140, 240, 40));
 
         jLabel30.setForeground(new java.awt.Color(51, 51, 51));
         jLabel30.setText("_________________________________________");
-        jPanel2.add(jLabel30, new org.netbeans.lib.awtextra.AbsoluteConstraints(850, 280, 250, 50));
+        jPanel2.add(jLabel30, new org.netbeans.lib.awtextra.AbsoluteConstraints(910, 150, 250, 50));
 
         jLabel12.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
-        jLabel12.setText("Check-In:");
-        jPanel2.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(750, 330, 92, 28));
+        jLabel12.setText("Checked-In:");
+        jPanel2.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 160, 92, 28));
 
         jLabel9.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
         jLabel9.setText("Check-Out:");
-        jPanel2.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(750, 370, 110, 28));
+        jPanel2.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 200, 110, 28));
 
         cki.setBackground(new java.awt.Color(204, 255, 255));
         cki.setFont(cki.getFont().deriveFont(cki.getFont().getSize()+3f));
@@ -607,11 +576,11 @@ public class checkOut extends javax.swing.JFrame {
                 ckiActionPerformed(evt);
             }
         });
-        jPanel2.add(cki, new org.netbeans.lib.awtextra.AbsoluteConstraints(850, 310, 240, 40));
+        jPanel2.add(cki, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 140, 240, 40));
 
         jLabel31.setForeground(new java.awt.Color(51, 51, 51));
         jLabel31.setText("_________________________________________");
-        jPanel2.add(jLabel31, new org.netbeans.lib.awtextra.AbsoluteConstraints(850, 320, 250, 50));
+        jPanel2.add(jLabel31, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 150, 250, 50));
 
         cko.setBackground(new java.awt.Color(204, 255, 255));
         cko.setFont(cko.getFont().deriveFont(cko.getFont().getSize()+3f));
@@ -621,21 +590,99 @@ public class checkOut extends javax.swing.JFrame {
                 ckoActionPerformed(evt);
             }
         });
-        jPanel2.add(cko, new org.netbeans.lib.awtextra.AbsoluteConstraints(850, 350, 240, 40));
+        jPanel2.add(cko, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 180, 240, 40));
 
         jLabel32.setForeground(new java.awt.Color(51, 51, 51));
         jLabel32.setText("_________________________________________");
-        jPanel2.add(jLabel32, new org.netbeans.lib.awtextra.AbsoluteConstraints(850, 360, 250, 50));
+        jPanel2.add(jLabel32, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 190, 250, 50));
+
+        jPanel3.setBackground(new java.awt.Color(0, 153, 0));
+
+        jLabel2.setFont(new java.awt.Font("Copperplate Gothic Bold", 1, 36)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(204, 204, 204));
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel2.setText("Check-In");
+
+        jButton2.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jButton2.setText("BACK");
+        jButton2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton2MouseClicked(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(114, 114, 114)
+                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 1066, Short.MAX_VALUE)
+                .addGap(29, 29, 29)
+                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+
+        jPanel2.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1300, -1));
+
+        jLabel17.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
+        jLabel17.setText("Transaction ID:");
+        jPanel2.add(jLabel17, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 100, 120, 28));
+
+        id.setBackground(new java.awt.Color(204, 255, 255));
+        id.setFont(id.getFont().deriveFont(id.getFont().getSize()+3f));
+        id.setBorder(null);
+        id.setEnabled(false);
+        id.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                idActionPerformed(evt);
+            }
+        });
+        jPanel2.add(id, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 90, 200, 40));
+
+        jLabel33.setForeground(new java.awt.Color(51, 51, 51));
+        jLabel33.setText("_________________________________________");
+        jPanel2.add(jLabel33, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 100, 210, 50));
+
+        jLabel8.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
+        jLabel8.setText("Time");
+        jPanel2.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 70, -1, 28));
+
+        txttime.setFont(new java.awt.Font("Verdana", 1, 24)); // NOI18N
+        txttime.setText("0");
+        jPanel2.add(txttime, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 100, -1, 28));
+
+        jLabel25.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
+        jLabel25.setText("Date");
+        jPanel2.add(jLabel25, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 70, -1, 28));
+
+        txtdate.setFont(new java.awt.Font("Verdana", 1, 24)); // NOI18N
+        txtdate.setText("0");
+        jPanel2.add(txtdate, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 100, -1, 28));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 1153, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 1184, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 673, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 693, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         pack();
@@ -807,10 +854,6 @@ public class checkOut extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_nodActionPerformed
 
-    private void prcActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_prcActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_prcActionPerformed
-
     private void cnm1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cnm1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_cnm1ActionPerformed
@@ -818,10 +861,6 @@ public class checkOut extends javax.swing.JFrame {
     private void cno1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cno1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_cno1ActionPerformed
-
-    private void rtpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rtpActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rtpActionPerformed
 
     private void rnoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rnoActionPerformed
         // TODO add your handling code here:
@@ -834,6 +873,20 @@ public class checkOut extends javax.swing.JFrame {
     private void ckoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ckoActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_ckoActionPerformed
+
+    private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
+        adminDash ads = new adminDash();
+        ads.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_jButton2MouseClicked
+
+    private void idActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_idActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_idActionPerformed
+
+    private void rtpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rtpActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_rtpActionPerformed
 
     /**
      * @param args the command line arguments
@@ -881,7 +934,9 @@ public class checkOut extends javax.swing.JFrame {
     private javax.swing.JTextField cno;
     private javax.swing.JTextField cno1;
     private javax.swing.JTable cosTable;
+    private javax.swing.JTextField id;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -889,8 +944,9 @@ public class checkOut extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
-    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel19;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel22;
@@ -899,12 +955,12 @@ public class checkOut extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel25;
     private javax.swing.JLabel jLabel26;
     private javax.swing.JLabel jLabel27;
-    private javax.swing.JLabel jLabel28;
     private javax.swing.JLabel jLabel29;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel30;
     private javax.swing.JLabel jLabel31;
     private javax.swing.JLabel jLabel32;
+    private javax.swing.JLabel jLabel33;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
@@ -912,6 +968,7 @@ public class checkOut extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField nod;
     private javax.swing.JPanel p10;
@@ -919,7 +976,6 @@ public class checkOut extends javax.swing.JFrame {
     private javax.swing.JPanel p4;
     private javax.swing.JPanel p5;
     private javax.swing.JPanel p9;
-    private javax.swing.JTextField prc;
     public javax.swing.JTextField pw;
     private javax.swing.JTextField rno;
     private javax.swing.JTextField rtp;

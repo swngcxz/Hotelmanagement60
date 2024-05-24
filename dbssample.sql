@@ -3,11 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
-<<<<<<< HEAD
--- Generation Time: May 23, 2024 at 04:34 AM
-=======
--- Generation Time: May 15, 2024 at 10:40 PM
->>>>>>> 73c327ef9b541923591189405b5e1ad56b257ebc
+-- Generation Time: May 24, 2024 at 09:25 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -28,28 +24,6 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
-<<<<<<< HEAD
--- Table structure for table `tbl_cio`
---
-
-CREATE TABLE `tbl_cio` (
-  `cio_id` int(11) NOT NULL,
-  `c_Id` int(11) NOT NULL,
-  `roomId` int(11) NOT NULL,
-  `check_in` date NOT NULL,
-  `check_out` date DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `tbl_cio`
---
-
-INSERT INTO `tbl_cio` (`cio_id`, `c_Id`, `roomId`, `check_in`, `check_out`) VALUES
-(1111, 1011, 2003, '2024-05-21', '2024-05-23');
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `tbl_cost`
 --
 
@@ -61,38 +35,18 @@ CREATE TABLE `tbl_cost` (
   `RoomNo` int(15) NOT NULL,
   `Check_In` datetime NOT NULL DEFAULT current_timestamp(),
   `Check_Out` date DEFAULT NULL,
-  `c_balance` int(50) NOT NULL
+  `c_balance` int(50) NOT NULL,
+  `c_status` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `tbl_cost`
 --
 
-INSERT INTO `tbl_cost` (`id`, `Name`, `ContactNo`, `RoomType`, `RoomNo`, `Check_In`, `Check_Out`, `c_balance`) VALUES
-(1, 'Josh Canillas', '09123456798', 'Regular', 203, '2024-05-22 03:16:48', '2024-05-24', 500),
-(4, 'eqweqw', '1231214', 'VIP', 401, '2024-05-23 04:31:27', NULL, 1500),
-(7, 'sud', '1232131', 'VIP', 404, '2024-05-23 04:35:05', NULL, 1500);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `tbl_customer`
---
-
-CREATE TABLE `tbl_customer` (
-  `c_id` int(11) NOT NULL,
-  `Name` varchar(100) NOT NULL,
-  `Address` varchar(100) NOT NULL,
-  `c_email` varchar(50) NOT NULL,
-  `room_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `tbl_customer`
---
-
-INSERT INTO `tbl_customer` (`c_id`, `Name`, `Address`, `c_email`, `room_id`) VALUES
-(1011, 'Christine Raganas', 'Tunghaan, Minglanilla, Cebu', 'christineraganas@gmail.com', 2001);
+INSERT INTO `tbl_cost` (`id`, `Name`, `ContactNo`, `RoomType`, `RoomNo`, `Check_In`, `Check_Out`, `c_balance`, `c_status`) VALUES
+(1, 'Josh Canillas', '09123456798', 'Regular', 203, '2024-05-22 03:16:48', '2024-05-24', 500, 'Active'),
+(11, 'mnbjkenrb', '21843213', 'Deluxe', 303, '2024-05-24 00:27:42', NULL, 1000, 'Active'),
+(12, 'bfefgsv', '214325423', 'VIP', 402, '2024-05-24 00:29:07', NULL, 1500, 'Active');
 
 -- --------------------------------------------------------
 
@@ -133,23 +87,21 @@ INSERT INTO `tbl_rooms` (`roomID`, `roomNo`, `roomType`, `price`, `r_status`) VA
 (2004, 204, 'Regular', 500.00, 'Unclean'),
 (2050, 205, 'Regular', 500.00, 'Booked'),
 (3001, 301, 'Deluxe', 1000.00, 'Unclean'),
-(3002, 302, 'Deluxe', 1000.00, 'Active'),
-(3003, 303, 'Deluxe', 1000.00, 'Active'),
-(3004, 304, 'Deluxe', 1000.00, 'Active'),
+(3002, 302, 'Deluxe', 1000.00, 'Archived'),
+(3003, 303, 'Deluxe', 1000.00, 'Booked'),
+(3004, 304, 'Deluxe', 1000.00, 'Archived'),
 (3005, 305, 'Deluxe', 1000.00, 'Archived'),
-(4001, 401, 'VIP', 1500.00, 'Booked'),
-(4002, 402, 'VIP', 1500.00, 'Active'),
-(4003, 404, 'VIP', 1500.00, 'Booked'),
+(4001, 401, 'VIP', 1500.00, 'Archived'),
+(4002, 402, 'VIP', 1500.00, 'Booked'),
+(4003, 404, 'VIP', 1500.00, 'Archived'),
 (4005, 405, 'VIP', 1500.00, 'Unclean'),
-(5010, 510, 'Penthouse', 5000.00, 'Active'),
+(5010, 510, 'Penthouse', 5000.00, 'Archived'),
 (5011, 511, 'Penthouse', 5000.00, 'Archived'),
-(5012, 512, 'Penthouse', 5000.00, 'Active');
+(5012, 512, 'Penthouse', 5001.00, 'under Maintaintance');
 
 -- --------------------------------------------------------
 
 --
-=======
->>>>>>> 73c327ef9b541923591189405b5e1ad56b257ebc
 -- Table structure for table `tbl_user`
 --
 
@@ -170,46 +122,19 @@ CREATE TABLE `tbl_user` (
 --
 
 INSERT INTO `tbl_user` (`u_id`, `u_fname`, `u_lname`, `u_email`, `u_username`, `u_password`, `u_type`, `u_status`, `u_image`) VALUES
-<<<<<<< HEAD
-(1009, 'Diane', 'Ragans', 'dianeraganas@gmail.com', 'diane', 'omkq6v5p1uSEzN1bCvdUtb380MF+dNOmfR110DpAPA4=', 'Admin', 'Active', ''),
+(1009, 'Diane', 'Raganas', 'dianeraganas@gmail.com', 'diane', 'omkq6v5p1uSEzN1bCvdUtb380MF+dNOmfR110DpAPA4=', 'Admin', 'Active', 'src/userimages/images.png'),
 (1010, 'Josh', 'Canillas', '123swngcxz@gmail.com', '123swngcxz', '8NXUBbqEUiLFdRqRXzAvDEpx9y7BItfwFkpKLVGow+o=', 'User', 'Active', 'null'),
 (1011, 'Khan', 'Canillas', 'canillaskhan@gmail.com', 'khan123', 'yV/gq9UI10+GHTPbVB8ceDIEjGmvnTJeuwMRaBLtR4I=', 'User', 'Active', '');
-=======
-(1001, 'Josh', 'Canillas', '123swngcxz@gmail.com', '123swngcxz', 'XmCNe+ynUTyrGOajluqJTyxUZjedzB44iMwj1oWupgA=', 'Admin', 'Active', ''),
-(1002, 'test', 'test', 'test', 'test', 'XmCNe+ynUTyrGOajluqJTyxUZjedzB44iMwj1oWupgA=', 'Admin', 'Active', ''),
-(1003, 'user', 'user', 'user', 'user', 'XmCNe+ynUTyrGOajluqJTyxUZjedzB44iMwj1oWupgA=', 'User', 'Active', ''),
-(1004, 'first', 'first', 'first', 'first1', 'XmCNe+ynUTyrGOajluqJTyxUZjedzB44iMwj1oWupgA=', 'Admin', 'Pending', ''),
-(1005, 'second', 'second', 'second', '123123', 'XmCNe+ynUTyrGOajluqJTyxUZjedzB44iMwj1oWupgA=', 'Admin', 'Active', ''),
-(1006, 'third', 'third', 'third', 'third', 'XmCNe+ynUTyrGOajluqJTyxUZjedzB44iMwj1oWupgA=', 'Admin', 'Active', ''),
-(1007, 'samp', 'samp', 'samp', 'samp', 'XmCNe+ynUTyrGOajluqJTyxUZjedzB44iMwj1oWupgA=', 'Admin', 'Active', ''),
-(1008, 'josh', 'josh', 'josh', 'josh', 'XmCNe+ynUTyrGOajluqJTyxUZjedzB44iMwj1oWupgA=', 'Admin', 'Active', ''),
-(1009, 'diane', 'raganas', 'diane@gmail.com', 'diane', 'XmCNe+ynUTyrGOajluqJTyxUZjedzB44iMwj1oWupgA=', 'Admin', 'Active', 'src/userimages/maxresdefault.png');
->>>>>>> 73c327ef9b541923591189405b5e1ad56b257ebc
 
 --
 -- Indexes for dumped tables
 --
 
 --
-<<<<<<< HEAD
--- Indexes for table `tbl_cio`
---
-ALTER TABLE `tbl_cio`
-  ADD PRIMARY KEY (`cio_id`),
-  ADD KEY `room_id` (`roomId`),
-  ADD KEY `c_id` (`c_Id`);
-
---
 -- Indexes for table `tbl_cost`
 --
 ALTER TABLE `tbl_cost`
   ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `tbl_customer`
---
-ALTER TABLE `tbl_customer`
-  ADD PRIMARY KEY (`c_id`);
 
 --
 -- Indexes for table `tbl_reservations`
@@ -227,8 +152,6 @@ ALTER TABLE `tbl_rooms`
   ADD UNIQUE KEY `roomNo` (`roomNo`);
 
 --
-=======
->>>>>>> 73c327ef9b541923591189405b5e1ad56b257ebc
 -- Indexes for table `tbl_user`
 --
 ALTER TABLE `tbl_user`
@@ -239,23 +162,10 @@ ALTER TABLE `tbl_user`
 --
 
 --
-<<<<<<< HEAD
--- AUTO_INCREMENT for table `tbl_cio`
---
-ALTER TABLE `tbl_cio`
-  MODIFY `cio_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1112;
-
---
 -- AUTO_INCREMENT for table `tbl_cost`
 --
 ALTER TABLE `tbl_cost`
-  MODIFY `id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
-
---
--- AUTO_INCREMENT for table `tbl_customer`
---
-ALTER TABLE `tbl_customer`
-  MODIFY `c_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1012;
+  MODIFY `id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `tbl_reservations`
@@ -280,24 +190,11 @@ ALTER TABLE `tbl_user`
 --
 
 --
--- Constraints for table `tbl_cio`
---
-ALTER TABLE `tbl_cio`
-  ADD CONSTRAINT `c_id` FOREIGN KEY (`c_Id`) REFERENCES `tbl_customer` (`c_id`),
-  ADD CONSTRAINT `room_id` FOREIGN KEY (`roomId`) REFERENCES `tbl_rooms` (`roomID`);
-
---
 -- Constraints for table `tbl_reservations`
 --
 ALTER TABLE `tbl_reservations`
   ADD CONSTRAINT `roomId` FOREIGN KEY (`roomId`) REFERENCES `tbl_rooms` (`roomID`),
   ADD CONSTRAINT `u_id` FOREIGN KEY (`u_id`) REFERENCES `tbl_user` (`u_id`);
-=======
--- AUTO_INCREMENT for table `tbl_user`
---
-ALTER TABLE `tbl_user`
-  MODIFY `u_id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1010;
->>>>>>> 73c327ef9b541923591189405b5e1ad56b257ebc
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

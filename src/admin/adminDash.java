@@ -5,6 +5,7 @@
  */
 package admin;
 
+import Rooms.checkOut;
 import Rooms.manageRooms;
 import canillasapp.loginForm;
 import configgg.Session;
@@ -173,6 +174,7 @@ public class adminDash extends javax.swing.JFrame {
         txtdate = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
+        jDateChooser1 = new com.toedter.calendar.JDateChooser();
 
         acc_name1.setFont(new java.awt.Font("Lucida Console", 1, 24)); // NOI18N
         acc_name1.setForeground(new java.awt.Color(255, 255, 255));
@@ -445,6 +447,7 @@ public class adminDash extends javax.swing.JFrame {
         jDesktopPane1.setLayer(txtdate, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane1.setLayer(jLabel2, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane1.setLayer(jLabel3, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jDesktopPane1.setLayer(jDateChooser1, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
         javax.swing.GroupLayout jDesktopPane1Layout = new javax.swing.GroupLayout(jDesktopPane1);
         jDesktopPane1.setLayout(jDesktopPane1Layout);
@@ -467,6 +470,10 @@ public class adminDash extends javax.swing.JFrame {
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(17, 17, 17)))
                 .addContainerGap())
+            .addGroup(jDesktopPane1Layout.createSequentialGroup()
+                .addGap(328, 328, 328)
+                .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jDesktopPane1Layout.setVerticalGroup(
             jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -476,7 +483,7 @@ public class adminDash extends javax.swing.JFrame {
                     .addGroup(jDesktopPane1Layout.createSequentialGroup()
                         .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jDesktopPane1Layout.createSequentialGroup()
-                                .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 25, Short.MAX_VALUE)
+                                .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addGap(39, 39, 39))
                             .addGroup(jDesktopPane1Layout.createSequentialGroup()
                                 .addComponent(jLabel3)
@@ -484,11 +491,14 @@ public class adminDash extends javax.swing.JFrame {
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 351, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(29, 29, 29))
                     .addGroup(jDesktopPane1Layout.createSequentialGroup()
-                        .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtdate, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txttime, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(txtdate, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(txttime, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(391, 391, 391)))
                 .addComponent(p5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(47, 47, 47))
         );
@@ -608,23 +618,9 @@ public class adminDash extends javax.swing.JFrame {
            ResultSet rs = db.getData("SELECT * FROM tbl_cost WHERE roomNo = '"+mod.getValueAt(row, 3)+"'");
 
            if(rs.next()){
-               ResultSet up = db.getData("SELECT * FROM tbl_rooms WHERE roomNo = '"+mod.getValueAt(row, 3)+"'");
-               Object val = rs.getString("id");
-               String id = val.toString();
-
-               int l = JOptionPane.showConfirmDialog(null, "Are you Sure you want to Check Out?", "Select", JOptionPane.YES_NO_OPTION);
-
-               if(l == 0){
-                   int s_id = Integer.parseInt(id);
-                   db.delete(s_id,"tbl_cost","id",false);
-                   if(up.next()){
-                       db.updateData("UPDATE tbl_rooms SET r_status = 'Archived' WHERE roomNo = '"+mod.getValueAt(row, 3)+"'",false);
-                       JOptionPane.showMessageDialog(null, "Checked out");
-                   }
-               }
-               DefaultTableModel model = (DefaultTableModel)tableAd.getModel();
-               model.setRowCount(0);
-               displayData(); 
+               checkOut cout = new checkOut();
+               cout.setVisible(true);
+               this.dispose();
             
         }
         
@@ -682,6 +678,7 @@ public class adminDash extends javax.swing.JFrame {
     private javax.swing.JLabel acc_name1;
     private javax.swing.JLabel img;
     private javax.swing.JButton jButton1;
+    private com.toedter.calendar.JDateChooser jDateChooser1;
     private javax.swing.JDesktopPane jDesktopPane1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel11;

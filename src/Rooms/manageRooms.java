@@ -6,6 +6,7 @@
 package Rooms;
 
 import admin.adminDash;
+import configgg.Session;
 import configgg.dbconnect;
 import java.awt.Color;
 import java.awt.Image;
@@ -30,6 +31,7 @@ import javax.swing.Timer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import net.proteanit.sql.DbUtils;
+import register.userForm;
 
 /**
  *
@@ -47,8 +49,10 @@ public class manageRooms extends javax.swing.JFrame {
         rt();
         date();
         time();
-      
+        voidHide();
     }
+    
+    
     
       private void date(){
         
@@ -60,6 +64,7 @@ public class manageRooms extends javax.swing.JFrame {
         txtdate.setText(dt);
              
     }
+      
     
         Timer t;
         SimpleDateFormat st;
@@ -81,6 +86,28 @@ public class manageRooms extends javax.swing.JFrame {
         
         t.start();
         
+    }
+    
+    private void voidHide(){
+        dbconnect db = new dbconnect();
+        Session sess = Session.getInstance();
+        try{
+              ResultSet rs = db.getData("SELECT * FROM tbl_user WHERE u_id = '"+sess.getUid()+"'");
+             
+              if(rs.next()){
+                  String type = rs.getString("u_type");
+                  
+                  if(type.equals("Admin")){
+                      System.out.println("revealed");
+                  }else{
+                      vd.hide();
+                  }
+              }
+              
+              
+           }catch(SQLException ex){
+               System.out.println(""+ex);
+           }
     }
     
     private void rt(){
@@ -180,7 +207,7 @@ public class manageRooms extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
-        p3 = new javax.swing.JPanel();
+        vd = new javax.swing.JPanel();
         jLabel11 = new javax.swing.JLabel();
         p4 = new javax.swing.JPanel();
         jLabel13 = new javax.swing.JLabel();
@@ -222,9 +249,15 @@ public class manageRooms extends javax.swing.JFrame {
         jLabel25 = new javax.swing.JLabel();
         txtdate = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        txtcout = new com.toedter.calendar.JDateChooser();
+        cout = new com.toedter.calendar.JDateChooser();
         p10 = new javax.swing.JPanel();
         jLabel26 = new javax.swing.JLabel();
+        jLabel16 = new javax.swing.JLabel();
+        rt6 = new javax.swing.JTextField();
+        jLabel27 = new javax.swing.JLabel();
+        jLabel17 = new javax.swing.JLabel();
+        id = new javax.swing.JTextField();
+        jLabel28 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -257,35 +290,35 @@ public class manageRooms extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 1170, Short.MAX_VALUE)
+                .addGap(114, 114, 114)
+                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 1066, Short.MAX_VALUE)
                 .addGap(29, 29, 29)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
         jPanel2.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1300, -1));
 
-        p3.setBackground(new java.awt.Color(102, 0, 0));
-        p3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        p3.addMouseListener(new java.awt.event.MouseAdapter() {
+        vd.setBackground(new java.awt.Color(102, 0, 0));
+        vd.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        vd.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                p3MouseClicked(evt);
+                vdMouseClicked(evt);
             }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                p3MouseEntered(evt);
+                vdMouseEntered(evt);
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                p3MouseExited(evt);
+                vdMouseExited(evt);
             }
         });
 
@@ -293,26 +326,26 @@ public class manageRooms extends javax.swing.JFrame {
         jLabel11.setFont(new java.awt.Font("Verdana", 1, 14)); // NOI18N
         jLabel11.setForeground(new java.awt.Color(255, 255, 255));
         jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel11.setText("CANCEL");
+        jLabel11.setText("VOID ");
 
-        javax.swing.GroupLayout p3Layout = new javax.swing.GroupLayout(p3);
-        p3.setLayout(p3Layout);
-        p3Layout.setHorizontalGroup(
-            p3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(p3Layout.createSequentialGroup()
+        javax.swing.GroupLayout vdLayout = new javax.swing.GroupLayout(vd);
+        vd.setLayout(vdLayout);
+        vdLayout.setHorizontalGroup(
+            vdLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(vdLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
-        p3Layout.setVerticalGroup(
-            p3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(p3Layout.createSequentialGroup()
+        vdLayout.setVerticalGroup(
+            vdLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(vdLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
-        jPanel2.add(p3, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 540, 170, 60));
+        jPanel2.add(vd, new org.netbeans.lib.awtextra.AbsoluteConstraints(970, 280, 220, 60));
 
         p4.setBackground(new java.awt.Color(0, 153, 0));
         p4.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -329,10 +362,10 @@ public class manageRooms extends javax.swing.JFrame {
         });
 
         jLabel13.setBackground(new java.awt.Color(0, 102, 153));
-        jLabel13.setFont(new java.awt.Font("Verdana", 1, 14)); // NOI18N
+        jLabel13.setFont(new java.awt.Font("Verdana", 1, 18)); // NOI18N
         jLabel13.setForeground(new java.awt.Color(255, 255, 255));
         jLabel13.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel13.setText("Confirm");
+        jLabel13.setText("Book Transaction");
         jLabel13.addAncestorListener(new javax.swing.event.AncestorListener() {
             public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
             }
@@ -360,34 +393,34 @@ public class manageRooms extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jPanel2.add(p4, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 470, 170, 60));
+        jPanel2.add(p4, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 310, 280, 60));
 
-        jLabel8.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
+        jLabel8.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
         jLabel8.setText("Time");
-        jPanel2.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 360, -1, 28));
+        jPanel2.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 70, -1, 28));
 
         jLabel10.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
         jLabel10.setText("Name:");
-        jPanel2.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 170, 92, 28));
+        jPanel2.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 150, 92, 28));
 
         pw.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jPanel2.add(pw, new org.netbeans.lib.awtextra.AbsoluteConstraints(-20, 90, -1, -1));
 
         jLabel6.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
         jLabel6.setText("Room type:");
-        jPanel2.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 90, 92, 28));
+        jPanel2.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 90, 92, 28));
 
         jLabel5.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
         jLabel5.setText("Contact no.:");
-        jPanel2.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 210, 110, 28));
+        jPanel2.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 200, 110, 28));
 
         jLabel3.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
         jLabel3.setText("Room No.:");
-        jPanel2.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 130, 92, 28));
+        jPanel2.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 130, 92, 28));
 
         jLabel14.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
-        jLabel14.setText("Price:");
-        jPanel2.add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 320, -1, 28));
+        jLabel14.setText("Room Price:");
+        jPanel2.add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 190, -1, 28));
 
         rt2.setBackground(new java.awt.Color(204, 255, 255));
         rt2.setFont(rt2.getFont().deriveFont(rt2.getFont().getSize()+3f));
@@ -397,11 +430,11 @@ public class manageRooms extends javax.swing.JFrame {
                 rt2ActionPerformed(evt);
             }
         });
-        jPanel2.add(rt2, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 160, 240, 40));
+        jPanel2.add(rt2, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 140, 240, 40));
 
         jLabel19.setForeground(new java.awt.Color(51, 51, 51));
         jLabel19.setText("_________________________________________");
-        jPanel2.add(jLabel19, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 170, 250, 50));
+        jPanel2.add(jLabel19, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 150, 250, 50));
 
         rt3.setBackground(new java.awt.Color(204, 255, 255));
         rt3.setFont(rt3.getFont().deriveFont(rt3.getFont().getSize()+3f));
@@ -411,11 +444,11 @@ public class manageRooms extends javax.swing.JFrame {
                 rt3ActionPerformed(evt);
             }
         });
-        jPanel2.add(rt3, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 200, 240, 40));
+        jPanel2.add(rt3, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 190, 240, 40));
 
         jLabel20.setForeground(new java.awt.Color(51, 51, 51));
         jLabel20.setText("_________________________________________");
-        jPanel2.add(jLabel20, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 210, 250, 50));
+        jPanel2.add(jLabel20, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 200, 250, 50));
 
         rt5.setBackground(new java.awt.Color(204, 255, 255));
         rt5.setFont(rt5.getFont().deriveFont(rt5.getFont().getSize()+3f));
@@ -425,11 +458,11 @@ public class manageRooms extends javax.swing.JFrame {
                 rt5ActionPerformed(evt);
             }
         });
-        jPanel2.add(rt5, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 310, 240, 40));
+        jPanel2.add(rt5, new org.netbeans.lib.awtextra.AbsoluteConstraints(940, 180, 240, 40));
 
         jLabel21.setForeground(new java.awt.Color(51, 51, 51));
         jLabel21.setText("_________________________________________");
-        jPanel2.add(jLabel21, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 320, 250, 50));
+        jPanel2.add(jLabel21, new org.netbeans.lib.awtextra.AbsoluteConstraints(940, 190, 250, 50));
 
         p9.setBackground(new java.awt.Color(102, 102, 102));
         p9.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -468,7 +501,7 @@ public class manageRooms extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jPanel2.add(p9, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 470, 170, 60));
+        jPanel2.add(p9, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 310, 170, 60));
 
         jScrollPane1.setViewportView(cosTable);
 
@@ -498,7 +531,7 @@ public class manageRooms extends javax.swing.JFrame {
             p5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(p5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel15, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel15, javax.swing.GroupLayout.DEFAULT_SIZE, 994, Short.MAX_VALUE)
                 .addContainerGap())
         );
         p5Layout.setVerticalGroup(
@@ -515,19 +548,21 @@ public class manageRooms extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 845, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(p5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jScrollPane1)
                 .addContainerGap())
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(100, 100, 100)
+                .addComponent(p5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(111, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(50, 50, 50)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addComponent(p5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addGap(36, 36, 36))
         );
 
         jTabbedPane1.addTab("CUSTOMER DETAILS", jPanel3);
@@ -633,7 +668,7 @@ public class manageRooms extends javax.swing.JFrame {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 845, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 1205, Short.MAX_VALUE)
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
@@ -661,36 +696,40 @@ public class manageRooms extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("ROOM DETAILS", jPanel4);
 
-        jPanel2.add(jTabbedPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 90, 870, 560));
+        jPanel2.add(jTabbedPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 400, 1230, 420));
         jTabbedPane1.getAccessibleContext().setAccessibleName("ROOM DETAILS");
         jTabbedPane1.getAccessibleContext().setAccessibleDescription("ROOM DETAILS");
 
-        txtrt.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " " }));
+        txtrt.setBackground(new java.awt.Color(204, 255, 255));
+        txtrt.setEditable(true);
+        txtrt.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "" }));
         txtrt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtrtActionPerformed(evt);
             }
         });
-        jPanel2.add(txtrt, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 80, 250, 40));
+        jPanel2.add(txtrt, new org.netbeans.lib.awtextra.AbsoluteConstraints(940, 80, 250, 40));
 
-        jPanel2.add(txtrno, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 120, 250, 40));
+        txtrno.setBackground(new java.awt.Color(204, 255, 255));
+        txtrno.setEditable(true);
+        jPanel2.add(txtrno, new org.netbeans.lib.awtextra.AbsoluteConstraints(940, 120, 250, 40));
 
-        txttime.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
+        txttime.setFont(new java.awt.Font("Verdana", 1, 24)); // NOI18N
         txttime.setText("0");
-        jPanel2.add(txttime, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 390, -1, 28));
+        jPanel2.add(txttime, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 100, -1, 28));
 
-        jLabel25.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
+        jLabel25.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
         jLabel25.setText("Date");
-        jPanel2.add(jLabel25, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 360, -1, 28));
+        jPanel2.add(jLabel25, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 70, -1, 28));
 
-        txtdate.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
+        txtdate.setFont(new java.awt.Font("Verdana", 1, 24)); // NOI18N
         txtdate.setText("0");
-        jPanel2.add(txtdate, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 390, -1, 28));
+        jPanel2.add(txtdate, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 100, -1, 28));
 
         jLabel4.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
         jLabel4.setText("Check-Out");
-        jPanel2.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 270, 92, 28));
-        jPanel2.add(txtcout, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 260, 240, 40));
+        jPanel2.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 180, 92, 28));
+        jPanel2.add(cout, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 170, 240, 40));
 
         p10.setBackground(new java.awt.Color(102, 102, 102));
         p10.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -729,19 +768,56 @@ public class manageRooms extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jPanel2.add(p10, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 540, 170, 60));
+        jPanel2.add(p10, new org.netbeans.lib.awtextra.AbsoluteConstraints(700, 310, 170, 60));
+
+        jLabel16.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
+        jLabel16.setText("Total Price:");
+        jPanel2.add(jLabel16, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 230, -1, 28));
+
+        rt6.setBackground(new java.awt.Color(204, 255, 255));
+        rt6.setFont(rt6.getFont().deriveFont(rt6.getFont().getSize()+3f));
+        rt6.setBorder(null);
+        rt6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rt6ActionPerformed(evt);
+            }
+        });
+        jPanel2.add(rt6, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 220, 240, 40));
+
+        jLabel27.setForeground(new java.awt.Color(51, 51, 51));
+        jLabel27.setText("_________________________________________");
+        jPanel2.add(jLabel27, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 230, 250, 50));
+
+        jLabel17.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
+        jLabel17.setText("Transaction ID:");
+        jPanel2.add(jLabel17, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 100, 120, 28));
+
+        id.setBackground(new java.awt.Color(204, 255, 255));
+        id.setFont(id.getFont().deriveFont(id.getFont().getSize()+3f));
+        id.setBorder(null);
+        id.setEnabled(false);
+        id.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                idActionPerformed(evt);
+            }
+        });
+        jPanel2.add(id, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 90, 200, 40));
+
+        jLabel28.setForeground(new java.awt.Color(51, 51, 51));
+        jLabel28.setText("_________________________________________");
+        jPanel2.add(jLabel28, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 100, 210, 50));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 1290, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 673, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 853, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         pack();
@@ -770,15 +846,22 @@ public class manageRooms extends javax.swing.JFrame {
             if(rs.next()){
                    
                 
-                    if(db.insertData("INSERT INTO tbl_cost(Name,ContactNo,RoomType,RoomNo,Check_in,Check_out,c_balance)"
+                    if(db.insertData("INSERT INTO tbl_cost(Name,ContactNo,RoomType,RoomNo,Check_in,Check_out,c_balance, c_status)"
                             + "VALUES('"+rt2.getText()+"','"+rt3.getText()+"', '"+txtrt.getSelectedItem()+"','"+txtrno.getSelectedItem()+"',"
-                                    + "CURRENT_TIMESTAMP,NULL,'"+rt5.getText()+"')"))
+                                    + "CURRENT_TIMESTAMP,NULL,'"+rt5.getText()+"', 'Active')"))
                     {
                          db.updateData("UPDATE tbl_rooms SET r_status = 'Booked' WHERE roomNo = '"+txtrno.getSelectedItem()+"'",false);
                          JOptionPane.showMessageDialog(null,"Checked In");
                          DefaultTableModel model = (DefaultTableModel)cosTable.getModel();
                          model.setRowCount(0);
                          displayData(); 
+                         
+                        id.setText("");
+                        txtrt.setSelectedItem("");
+                        txtrno.setSelectedItem("");
+                        rt2.setText("");
+                        rt3.setText("");
+                        cout.setDate(null);
                         
                     }else{
                         JOptionPane.showMessageDialog(null,"Invalid");
@@ -819,17 +902,56 @@ public class manageRooms extends javax.swing.JFrame {
         displayRoom();    
     }//GEN-LAST:event_p5MouseClicked
 
-    private void p3MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p3MouseExited
-        p3.setBackground(new Color(102,0,0));
-    }//GEN-LAST:event_p3MouseExited
+    private void vdMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_vdMouseExited
+        vd.setBackground(new Color(102,0,0));
+    }//GEN-LAST:event_vdMouseExited
 
-    private void p3MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p3MouseEntered
-        p3.setBackground(new Color(153,0,0));
-    }//GEN-LAST:event_p3MouseEntered
+    private void vdMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_vdMouseEntered
+        vd.setBackground(new Color(153,0,0));
+    }//GEN-LAST:event_vdMouseEntered
 
-    private void p3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p3MouseClicked
+    private void vdMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_vdMouseClicked
+        dbconnect db = new dbconnect();
+        int row = cosTable.getSelectedRow();
 
-    }//GEN-LAST:event_p3MouseClicked
+        if(row < 0)
+        {
+            JOptionPane.showMessageDialog(null,"Please Select");
+        }
+        else
+        {
+            TableModel mod = cosTable.getModel();
+           try{
+
+           ResultSet rs = db.getData("SELECT * FROM tbl_cost WHERE roomNo = '"+mod.getValueAt(row, 3)+"'");
+
+           if(rs.next()){
+               ResultSet up = db.getData("SELECT * FROM tbl_rooms WHERE roomNo = '"+mod.getValueAt(row, 3)+"'");
+               Object val = rs.getString("id");
+               String id = val.toString();
+
+               int l = JOptionPane.showConfirmDialog(null, "Are you Sure you want to Check Out?", "Select", JOptionPane.YES_NO_OPTION);
+
+               if(l == 0){
+                   int s_id = Integer.parseInt(id);
+                   db.delete(s_id,"tbl_cost","id",false);
+                   if(up.next()){
+                       db.updateData("UPDATE tbl_rooms SET r_status = 'Archived' WHERE roomNo = '"+mod.getValueAt(row, 3)+"'",false);
+                       
+                   }
+               }
+               DefaultTableModel model = (DefaultTableModel)cosTable.getModel();
+               model.setRowCount(0);
+               displayData(); 
+            
+        }
+        
+        } catch (SQLException ex) 
+        {
+             Logger.getLogger(manageRooms.class.getName()).log(Level.SEVERE, null, ex);
+         }
+       }
+    }//GEN-LAST:event_vdMouseClicked
 
     private void rt2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rt2ActionPerformed
         // TODO add your handling code here:
@@ -840,7 +962,14 @@ public class manageRooms extends javax.swing.JFrame {
     }//GEN-LAST:event_rt3ActionPerformed
 
     private void p9MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p9MouseClicked
-        // TODO add your handling code here:
+                    id.setText("");
+                    txtrt.setSelectedItem("");
+                    txtrno.setSelectedItem("");
+                    rt2.setText("");
+                    rt3.setText("");
+                    
+                    
+           
     }//GEN-LAST:event_p9MouseClicked
 
     private void p9MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p9MouseEntered
@@ -878,7 +1007,40 @@ public class manageRooms extends javax.swing.JFrame {
     }//GEN-LAST:event_rt5ActionPerformed
 
     private void p10MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p10MouseClicked
-        // TODO add your handling code here:
+       dbconnect db = new dbconnect();
+        int row = cosTable.getSelectedRow();
+
+        if(row < 0)
+        {
+            JOptionPane.showMessageDialog(null,"Please Select");
+        }
+        else
+        {
+            TableModel mod = cosTable.getModel();
+           try{
+
+           ResultSet rs = db.getData("SELECT * FROM tbl_cost WHERE roomNo = '"+mod.getValueAt(row, 3)+"'");
+
+           if(rs.next()){
+               
+                id.setText(""+rs.getInt("id"));
+                rt2.setText(""+rs.getString("Name"));
+                rt3.setText(""+rs.getString("contactNo"));
+                txtrt.setSelectedItem(""+rs.getString("roomType"));
+                txtrno.setSelectedItem(""+rs.getInt("roomNo"));
+          
+               
+               
+               
+               
+               
+               }
+        
+        } catch (SQLException ex) 
+        {
+             Logger.getLogger(manageRooms.class.getName()).log(Level.SEVERE, null, ex);
+         }
+       }
     }//GEN-LAST:event_p10MouseClicked
 
     private void p10MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p10MouseEntered
@@ -888,6 +1050,14 @@ public class manageRooms extends javax.swing.JFrame {
     private void p10MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p10MouseExited
         // TODO add your handling code here:
     }//GEN-LAST:event_p10MouseExited
+
+    private void rt6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rt6ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_rt6ActionPerformed
+
+    private void idActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_idActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_idActionPerformed
 
     /**
      * @param args the command line arguments
@@ -927,6 +1097,8 @@ public class manageRooms extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable cosTable;
+    private com.toedter.calendar.JDateChooser cout;
+    private javax.swing.JTextField id;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -935,6 +1107,8 @@ public class manageRooms extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
@@ -944,6 +1118,8 @@ public class manageRooms extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel25;
     private javax.swing.JLabel jLabel26;
+    private javax.swing.JLabel jLabel27;
+    private javax.swing.JLabel jLabel28;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -961,7 +1137,6 @@ public class manageRooms extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JPanel p10;
-    private javax.swing.JPanel p3;
     private javax.swing.JPanel p4;
     private javax.swing.JPanel p5;
     private javax.swing.JPanel p9;
@@ -969,11 +1144,12 @@ public class manageRooms extends javax.swing.JFrame {
     private javax.swing.JTextField rt2;
     private javax.swing.JTextField rt3;
     private javax.swing.JTextField rt5;
+    private javax.swing.JTextField rt6;
     private javax.swing.JTable tableRoom;
-    private com.toedter.calendar.JDateChooser txtcout;
     private javax.swing.JLabel txtdate;
     private javax.swing.JComboBox<String> txtrno;
     private javax.swing.JComboBox<String> txtrt;
     private javax.swing.JLabel txttime;
+    private javax.swing.JPanel vd;
     // End of variables declaration//GEN-END:variables
 }

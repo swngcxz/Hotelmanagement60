@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package user;
+package register;
 
 import admin.changePass;
 import canillasapp.loginForm;
@@ -28,6 +28,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.table.TableModel;
+import user.userDash;
 import static register.regDash.email;
 import static register.regDash.usname;
 

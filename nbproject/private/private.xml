@@ -3,21 +3,16 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/joshc/OneDrive/Documents/NetBeansProjects/Canillasprefi/src/Rooms/manageRooms.java</file>
-            <file>file:/C:/Users/joshc/OneDrive/Documents/NetBeansProjects/Canillasprefi/src/admin/reserve.java</file>
-            <file>file:/C:/Users/joshc/OneDrive/Documents/NetBeansProjects/Canillasprefi/src/register/regDash.java</file>
-            <file>file:/C:/Users/joshc/OneDrive/Documents/NetBeansProjects/Canillasprefi/src/configgg/Session.java</file>
-            <file>file:/C:/Users/joshc/OneDrive/Documents/NetBeansProjects/Canillasprefi/src/user/userDash.java</file>
-            <file>file:/C:/Users/joshc/OneDrive/Documents/NetBeansProjects/Canillasprefi/src/admin/adminDB.java</file>
-            <file>file:/C:/Users/joshc/OneDrive/Documents/NetBeansProjects/Canillasprefi/src/admin/adminDash.java</file>
-            <file>file:/C:/Users/joshc/OneDrive/Documents/NetBeansProjects/Canillasprefi/src/configgg/dbconnect.java</file>
-            <file>file:/C:/Users/joshc/OneDrive/Documents/NetBeansProjects/Canillasprefi/src/admin/changePass.java</file>
-            <file>file:/C:/Users/joshc/OneDrive/Documents/NetBeansProjects/Canillasprefi/src/Rooms/checkOut.java</file>
-            <file>file:/C:/Users/joshc/OneDrive/Documents/NetBeansProjects/Canillasprefi/src/Rooms/roomAvailability.java</file>
-            <file>file:/C:/Users/joshc/OneDrive/Documents/NetBeansProjects/Canillasprefi/src/Rooms/roomEdit.java</file>
-            <file>file:/C:/Users/joshc/OneDrive/Documents/NetBeansProjects/Canillasprefi/src/register/accountForm.java</file>
-            <file>file:/C:/Users/joshc/OneDrive/Documents/NetBeansProjects/Canillasprefi/src/user/userForm.java</file>
-            <file>file:/C:/Users/joshc/OneDrive/Documents/NetBeansProjects/Canillasprefi/src/Rooms/roomDetails.java</file>
+            <file>file:/C:/Users/joshc/OneDrive/Documents/NetBeansProjects/Hotelmanagement60/src/Rooms/checkOut.java</file>
+            <file>file:/C:/Users/joshc/OneDrive/Documents/NetBeansProjects/Hotelmanagement60/src/register/accountForm.java</file>
+            <file>file:/C:/Users/joshc/OneDrive/Documents/NetBeansProjects/Hotelmanagement60/src/admin/adminDash.java</file>
+            <file>file:/C:/Users/joshc/OneDrive/Documents/NetBeansProjects/Hotelmanagement60/src/register/userForm.java</file>
+            <file>file:/C:/Users/joshc/OneDrive/Documents/NetBeansProjects/Hotelmanagement60/src/user/userDash.java</file>
+            <file>file:/C:/Users/joshc/OneDrive/Documents/NetBeansProjects/Hotelmanagement60/src/admin/adminDB.java</file>
+            <file>file:/C:/Users/joshc/OneDrive/Documents/NetBeansProjects/Hotelmanagement60/src/Rooms/manageRooms.java</file>
+            <file>file:/C:/Users/joshc/OneDrive/Documents/NetBeansProjects/Hotelmanagement60/src/register/regDash.java</file>
+            <file>file:/C:/Users/joshc/OneDrive/Documents/NetBeansProjects/Hotelmanagement60/src/Rooms/roomAvailability.java</file>
+            <file>file:/C:/Users/joshc/OneDrive/Documents/NetBeansProjects/Hotelmanagement60/src/admin/changePass.java</file>
         </group>
     </open-files>
 </project-private>

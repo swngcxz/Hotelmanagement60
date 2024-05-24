@@ -5,6 +5,7 @@
  */
 package user;
 
+import register.userForm;
 import admin.changePass;
 import admin.adminDB;
 import Rooms.manageRooms;
@@ -477,6 +478,7 @@ public class userDash extends javax.swing.JFrame {
     private void p1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p1MouseClicked
         userForm usf = new userForm();
         usf.setVisible(true);
+        usf.cp.hide();
         usf.select.setEnabled(true);
         usf.remove.setEnabled(false);
         this.dispose();

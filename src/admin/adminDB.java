@@ -93,6 +93,7 @@ public class adminDB extends javax.swing.JFrame {
                       System.out.println("revealed");
                   }else{
                       p1.hide();
+                      heading.setText("Hotel Management System");
                   }
               }
               
@@ -189,7 +190,7 @@ public class adminDB extends javax.swing.JFrame {
         heading.setFont(new java.awt.Font("Century Schoolbook", 1, 36)); // NOI18N
         heading.setForeground(new java.awt.Color(255, 255, 255));
         heading.setText("ADMINISTRATION");
-        jPanel1.add(heading, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 0, 370, 60));
+        jPanel1.add(heading, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 1030, 60));
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(153, 153, 255));
@@ -418,6 +419,8 @@ public class adminDB extends javax.swing.JFrame {
         jPanel3.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 20, 210, 180));
 
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/maxresdefault.jpg"))); // NOI18N
+        jLabel3.setFocusable(false);
+        jLabel3.setPreferredSize(new java.awt.Dimension(1366, 768));
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -430,7 +433,7 @@ public class adminDB extends javax.swing.JFrame {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, 0)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 1290, javax.swing.GroupLayout.PREFERRED_SIZE))))
         );
         jPanel2Layout.setVerticalGroup(
