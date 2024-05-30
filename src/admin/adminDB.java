@@ -154,10 +154,6 @@ public class adminDB extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         heading = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        txttime = new javax.swing.JLabel();
-        txtdate = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel9 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         acc_name = new javax.swing.JLabel();
         acc_lname = new javax.swing.JLabel();
@@ -171,6 +167,8 @@ public class adminDB extends javax.swing.JFrame {
         jLabel8 = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
         img = new javax.swing.JLabel();
+        txtdate = new javax.swing.JLabel();
+        txttime = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -183,6 +181,7 @@ public class adminDB extends javax.swing.JFrame {
         });
 
         jPanel2.setBackground(new java.awt.Color(243, 123, 92));
+        jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel1.setBackground(new java.awt.Color(51, 0, 0));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -190,7 +189,7 @@ public class adminDB extends javax.swing.JFrame {
         heading.setFont(new java.awt.Font("Century Schoolbook", 1, 36)); // NOI18N
         heading.setForeground(new java.awt.Color(255, 255, 255));
         heading.setText("ADMINISTRATION");
-        jPanel1.add(heading, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 1030, 60));
+        jPanel1.add(heading, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 0, 640, 60));
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(153, 153, 255));
@@ -201,23 +200,9 @@ public class adminDB extends javax.swing.JFrame {
                 jLabel2MouseClicked(evt);
             }
         });
-        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(1440, 10, -1, -1));
+        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(1420, 10, -1, -1));
 
-        txttime.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
-        txttime.setForeground(new java.awt.Color(255, 255, 255));
-        txttime.setText("0");
-        jPanel1.add(txttime, new org.netbeans.lib.awtextra.AbsoluteConstraints(1270, 20, -1, 28));
-
-        txtdate.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
-        txtdate.setForeground(new java.awt.Color(255, 255, 255));
-        txtdate.setText("0");
-        jPanel1.add(txtdate, new org.netbeans.lib.awtextra.AbsoluteConstraints(1080, 20, -1, 28));
-
-        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/gif/icons8-date (1).gif"))); // NOI18N
-        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(1050, 20, -1, -1));
-
-        jLabel9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/gif/icons8-time (1).gif"))); // NOI18N
-        jPanel1.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(1230, 20, -1, -1));
+        jPanel2.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1490, -1));
 
         jPanel3.setBackground(new java.awt.Color(102, 102, 102));
         jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -226,13 +211,13 @@ public class adminDB extends javax.swing.JFrame {
         acc_name.setForeground(new java.awt.Color(255, 255, 255));
         acc_name.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         acc_name.setText("ADMIN");
-        jPanel3.add(acc_name, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 210, 220, 40));
+        jPanel3.add(acc_name, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 240, 220, 40));
 
         acc_lname.setFont(new java.awt.Font("Lucida Console", 1, 24)); // NOI18N
         acc_lname.setForeground(new java.awt.Color(255, 255, 255));
         acc_lname.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         acc_lname.setText("ADMIN");
-        jPanel3.add(acc_lname, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 230, 220, 40));
+        jPanel3.add(acc_lname, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 270, 220, 40));
 
         p1.setBackground(new java.awt.Color(102, 0, 0));
         p1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -260,14 +245,16 @@ public class adminDB extends javax.swing.JFrame {
         p1.setLayout(p1Layout);
         p1Layout.setHorizontalGroup(
             p1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 204, Short.MAX_VALUE)
+            .addGroup(p1Layout.createSequentialGroup()
+                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 36, Short.MAX_VALUE))
         );
         p1Layout.setVerticalGroup(
             p1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 44, Short.MAX_VALUE)
         );
 
-        jPanel3.add(p1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 290, 210, 50));
+        jPanel3.add(p1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 360, 210, 50));
 
         p2.setBackground(new java.awt.Color(102, 0, 0));
         p2.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -307,7 +294,7 @@ public class adminDB extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jPanel3.add(p2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 348, 210, 50));
+        jPanel3.add(p2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 420, 210, 50));
 
         p3.setBackground(new java.awt.Color(102, 0, 0));
         p3.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -347,7 +334,7 @@ public class adminDB extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jPanel3.add(p3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 410, 210, 50));
+        jPanel3.add(p3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 540, 210, 50));
 
         p4.setBackground(new java.awt.Color(102, 0, 0));
         p4.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -368,7 +355,7 @@ public class adminDB extends javax.swing.JFrame {
         jLabel8.setForeground(new java.awt.Color(255, 255, 255));
         jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8-room-30.png"))); // NOI18N
-        jLabel8.setText("Room Availability");
+        jLabel8.setText("Costumer Details");
 
         javax.swing.GroupLayout p4Layout = new javax.swing.GroupLayout(p4);
         p4.setLayout(p4Layout);
@@ -387,7 +374,7 @@ public class adminDB extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jPanel3.add(p4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 476, 210, 50));
+        jPanel3.add(p4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 480, 210, 50));
 
         jPanel5.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -399,66 +386,43 @@ public class adminDB extends javax.swing.JFrame {
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 210, Short.MAX_VALUE)
-            .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel5Layout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(img, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(img, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 180, Short.MAX_VALUE)
-            .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel5Layout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(img, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
+            .addComponent(img, javax.swing.GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE)
         );
 
-        jPanel3.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 20, 210, 180));
+        jPanel3.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 20, 210, 210));
+
+        jPanel2.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 60, 230, 720));
+
+        txtdate.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
+        txtdate.setForeground(new java.awt.Color(255, 255, 255));
+        txtdate.setText("0");
+        jPanel2.add(txtdate, new org.netbeans.lib.awtextra.AbsoluteConstraints(1340, 100, 100, 28));
+
+        txttime.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
+        txttime.setForeground(new java.awt.Color(255, 255, 255));
+        txttime.setText("0");
+        jPanel2.add(txttime, new org.netbeans.lib.awtextra.AbsoluteConstraints(1340, 70, 130, 28));
 
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/maxresdefault.jpg"))); // NOI18N
         jLabel3.setFocusable(false);
         jLabel3.setPreferredSize(new java.awt.Dimension(1366, 768));
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(10, 10, 10)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 1510, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 1290, javax.swing.GroupLayout.PREFERRED_SIZE))))
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-        );
+        jPanel2.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 60, 1260, 720));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 780, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
@@ -529,7 +493,7 @@ public class adminDB extends javax.swing.JFrame {
     private void p2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p2MouseClicked
         adminDash ad = new adminDash();
         ad.setVisible(true);
-        this.dispose();
+       this.dispose();
     }//GEN-LAST:event_p2MouseClicked
 
     private void p1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p1MouseClicked
@@ -539,16 +503,16 @@ public class adminDB extends javax.swing.JFrame {
     }//GEN-LAST:event_p1MouseClicked
 
     private void p3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p3MouseClicked
+       
         roomDetails rds = new roomDetails();
         rds.setVisible(true);
-        this.dispose();
         
     }//GEN-LAST:event_p3MouseClicked
 
     private void p4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p4MouseClicked
         roomAvailability rbt = new roomAvailability();
         rbt.setVisible(true);
-        this.dispose();
+       
     }//GEN-LAST:event_p4MouseClicked
 
     /**
@@ -594,12 +558,10 @@ public class adminDB extends javax.swing.JFrame {
     private javax.swing.JLabel img;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;

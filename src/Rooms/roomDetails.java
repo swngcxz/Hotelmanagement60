@@ -34,7 +34,7 @@ public class roomDetails extends javax.swing.JFrame {
     public void displayRoom(){
         try{
             dbconnect dbc = new dbconnect();
-            ResultSet rs = dbc.getData("SELECT roomNo, roomType, price, r_status  FROM tbl_rooms");
+            ResultSet rs = dbc.getData("SELECT roomNo, roomType, r_price, r_status  FROM tbl_room");
             tableRoom.setModel(DbUtils.resultSetToTableModel(rs));
              rs.close();
         }catch(SQLException ex){
@@ -66,6 +66,7 @@ public class roomDetails extends javax.swing.JFrame {
         jLabel10 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setUndecorated(true);
 
         jPanel1.setBackground(new java.awt.Color(204, 204, 204));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -181,6 +182,9 @@ public class roomDetails extends javax.swing.JFrame {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jLabel10MouseClicked(evt);
             }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                jLabel10MouseEntered(evt);
+            }
         });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -220,12 +224,6 @@ public class roomDetails extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jLabel10MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel10MouseClicked
-        adminDB adb = new adminDB();
-        adb.setVisible(true);
-        this.dispose();
-    }//GEN-LAST:event_jLabel10MouseClicked
-
     private void jLabel13AncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_jLabel13AncestorAdded
         // TODO add your handling code here:
     }//GEN-LAST:event_jLabel13AncestorAdded
@@ -245,7 +243,7 @@ public class roomDetails extends javax.swing.JFrame {
             {
                 dbconnect dbc = new dbconnect();
                 TableModel tbl= tableRoom.getModel();
-                ResultSet rs = dbc.getData("SELECT * FROM tbl_Rooms WHERE roomNo = '"+tbl.getValueAt(rowIndex, 0)+"'");
+                ResultSet rs = dbc.getData("SELECT * FROM tbl_room WHERE roomNo = '"+tbl.getValueAt(rowIndex, 0)+"'");
                 if(rs.next())
                 {
                     
@@ -253,8 +251,8 @@ public class roomDetails extends javax.swing.JFrame {
   
                     rdt.rid.setText(""+rs.getInt("roomID"));
                     rdt.rno.setText(""+rs.getString("roomNo"));
-                    rdt.rtp.setText(""+rs.getString("roomType"));
-                    rdt.prc.setText(""+rs.getString("price"));
+                    rdt.rtp.setSelectedItem(""+rs.getString("roomType"));
+                    rdt.prc.setText(""+rs.getString("r_price"));
                     rdt.rsts.setSelectedItem(""+rs.getString("r_status"));
                    
                     rdt.setVisible(true);
@@ -294,6 +292,15 @@ public class roomDetails extends javax.swing.JFrame {
     private void p5MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p5MouseExited
         p5.setBackground(new Color(102,102,102));// TODO add your handling code here:
     }//GEN-LAST:event_p5MouseExited
+
+    private void jLabel10MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel10MouseEntered
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jLabel10MouseEntered
+
+    private void jLabel10MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel10MouseClicked
+        
+        this.dispose();
+    }//GEN-LAST:event_jLabel10MouseClicked
 
     /**
      * @param args the command line arguments

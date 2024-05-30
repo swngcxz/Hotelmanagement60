@@ -12,15 +12,25 @@ import configgg.Session;
 import configgg.dbconnect;
 import java.awt.Color;
 import java.awt.Image;
+import java.awt.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import static java.lang.ProcessBuilder.Redirect.to;
+import java.sql.Blob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,9 +39,13 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.RowFilter;
 import javax.swing.Timer;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 import static jdk.nashorn.internal.objects.NativeJava.to;
 import net.proteanit.sql.DbUtils;
 
@@ -49,6 +63,17 @@ public class adminDash extends javax.swing.JFrame {
         displayData();
         time();
         date();
+        
+        
+        srchf.addKeyListener(new java.awt.event.KeyAdapter() {
+        public void keyReleased(java.awt.event.KeyEvent evt) {
+            filterTable(srchf.getText(), tableAd); 
+            
+        }
+        
+        });
+        
+        
       
     }
     
@@ -56,7 +81,7 @@ public class adminDash extends javax.swing.JFrame {
         
         Date d = new Date();
         
-        SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy");
          
         String dt = sdf.format(d);
         txtdate.setText(dt);
@@ -88,7 +113,8 @@ public class adminDash extends javax.swing.JFrame {
      public void displayData(){
         try{
             dbconnect dbc = new dbconnect();
-            ResultSet rs = dbc.getData("SELECT Name, ContactNo, RoomType, RoomNo, Check_In, Check_Out FROM tbl_cost");
+            ResultSet rs = dbc.getData("SELECT t.transID, t.roomID, t.u_id, t.name, t.Contact, t.Check_In, t.Check_Out,t.totalPayment,  t.status "
+                    + "\n FROM tbl_transaction t\n JOIN tbl_room r ON t.roomID = r.roomID;");
             tableAd.setModel(DbUtils.resultSetToTableModel(rs));
              rs.close();
         }catch(SQLException ex){
@@ -99,7 +125,7 @@ public class adminDash extends javax.swing.JFrame {
     
     }
     
-  public static int getHeightFromWidth(String imagePath, int desiredWidth) {
+   public static int getHeightFromWidth(String imagePath, int desiredWidth) {
         try {
             // Read the image file
             File imageFile = new File(imagePath);
@@ -138,6 +164,62 @@ public class adminDash extends javax.swing.JFrame {
     }
     
     
+            private void filterTable(String searchText, JTable table) 
+            {
+                TableRowSorter<TableModel> sorter = new TableRowSorter<>(table.getModel());
+                table.setRowSorter(sorter);
+
+                if (searchText.trim().length() == 0) {
+                    sorter.setRowFilter(null);
+                } else {
+                    sorter.setRowFilter(RowFilter.regexFilter("(?i)" + searchText));
+                }
+
+                applyHighlightRenderer(searchText, table);
+            }   
+
+           private void applyHighlightRenderer(String searchText, JTable table) 
+           {
+                for (int i = 0; i < table.getColumnCount(); i++) 
+                {
+                    table.getColumnModel().getColumn(i).setCellRenderer(new HighlightRenderer(searchText));
+                }
+            }
+
+            class HighlightRenderer extends DefaultTableCellRenderer 
+            {
+                private String searchText;
+
+                public HighlightRenderer(String searchText) 
+                {
+                    this.searchText = searchText;
+                }
+
+                @Override
+                protected void setValue(Object value) {
+                    if (value != null && searchText != null && !searchText.isEmpty()) 
+                    {
+                        String stringValue = value.toString();
+                        String lcSearchText = searchText.toLowerCase();
+                        String lcStringValue = stringValue.toLowerCase();
+
+                        int startIdx = lcStringValue.indexOf(lcSearchText);
+                        if (startIdx >= 0) 
+                        {
+                            String highlightedText = "<html>" + stringValue.substring(0, startIdx) +
+                                    "<span style='background: yellow;'>" +
+                                    stringValue.substring(startIdx, startIdx + searchText.length()) +
+                                    "</span>" + stringValue.substring(startIdx + searchText.length()) + "</html>";
+                            super.setValue(highlightedText);
+                            return;
+                        }
+                    }
+                    super.setValue(value);
+                }
+            }
+            
+      
+    
     
 
     /**
@@ -153,9 +235,9 @@ public class adminDash extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         acc_name = new javax.swing.JLabel();
-        acc_lname = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
         img = new javax.swing.JLabel();
         p6 = new javax.swing.JPanel();
@@ -165,16 +247,18 @@ public class adminDash extends javax.swing.JFrame {
         p4 = new javax.swing.JPanel();
         jLabel13 = new javax.swing.JLabel();
         jDesktopPane1 = new javax.swing.JDesktopPane();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        tableAd = new javax.swing.JTable();
         p5 = new javax.swing.JPanel();
         jLabel15 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
         txttime = new javax.swing.JLabel();
         txtdate = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
+        jPanel9 = new javax.swing.JPanel();
+        srch = new javax.swing.JLabel();
+        srchf = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        jDateChooser1 = new com.toedter.calendar.JDateChooser();
+        dateChoose = new com.toedter.calendar.JDateChooser();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tableAd = new javax.swing.JTable();
 
         acc_name1.setFont(new java.awt.Font("Lucida Console", 1, 24)); // NOI18N
         acc_name1.setForeground(new java.awt.Color(255, 255, 255));
@@ -191,29 +275,29 @@ public class adminDash extends javax.swing.JFrame {
         jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel1.setBackground(new java.awt.Color(80, 103, 120));
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel1.setFont(new java.awt.Font("SimSun-ExtB", 1, 36)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("ADMINISTRATION");
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 11, -1, -1));
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addContainerGap(860, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
+        jButton1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jButton1.setText("BACK");
+        jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton1MouseClicked(evt);
+            }
+        });
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1067, 11, 73, 30));
 
-        jPanel2.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1150, -1));
+        jPanel2.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1150, 50));
 
         jPanel3.setBackground(new java.awt.Color(34, 96, 137));
         jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -222,13 +306,7 @@ public class adminDash extends javax.swing.JFrame {
         acc_name.setForeground(new java.awt.Color(255, 255, 255));
         acc_name.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         acc_name.setText("ADMIN");
-        jPanel3.add(acc_name, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 250, 220, 40));
-
-        acc_lname.setFont(new java.awt.Font("Lucida Console", 1, 24)); // NOI18N
-        acc_lname.setForeground(new java.awt.Color(255, 255, 255));
-        acc_lname.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        acc_lname.setText("ADMIN");
-        jPanel3.add(acc_lname, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 270, 220, 40));
+        jPanel3.add(acc_name, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 240, 220, 40));
 
         jPanel5.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -240,18 +318,14 @@ public class adminDash extends javax.swing.JFrame {
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addComponent(img, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(img, javax.swing.GroupLayout.DEFAULT_SIZE, 240, Short.MAX_VALUE)
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addComponent(img, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(img, javax.swing.GroupLayout.DEFAULT_SIZE, 240, Short.MAX_VALUE)
         );
 
-        jPanel3.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 200, 180));
+        jPanel3.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 240, 240));
 
         p6.setBackground(new java.awt.Color(0, 204, 0));
         p6.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -373,16 +447,7 @@ public class adminDash extends javax.swing.JFrame {
         jPanel2.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 50, 240, 580));
 
         jDesktopPane1.setBackground(new java.awt.Color(255, 255, 255));
-
-        tableAd.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-
-            }
-        ));
-        jScrollPane1.setViewportView(tableAd);
+        jDesktopPane1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         p5.setBackground(new java.awt.Color(102, 102, 102));
         p5.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -410,98 +475,93 @@ public class adminDash extends javax.swing.JFrame {
             p5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(p5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel15, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel15, javax.swing.GroupLayout.DEFAULT_SIZE, 850, Short.MAX_VALUE)
                 .addContainerGap())
         );
         p5Layout.setVerticalGroup(
             p5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(p5Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, p5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel15, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel15, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
-        jButton1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jButton1.setText("BACK");
-        jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton1MouseClicked(evt);
-            }
-        });
+        jDesktopPane1.add(p5, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 442, -1, -1));
 
-        txttime.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
+        txttime.setFont(new java.awt.Font("Verdana", 1, 15)); // NOI18N
+        txttime.setForeground(new java.awt.Color(255, 255, 255));
         txttime.setText("0");
+        jDesktopPane1.add(txttime, new org.netbeans.lib.awtextra.AbsoluteConstraints(248, 11, 183, 28));
 
-        txtdate.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
+        txtdate.setFont(new java.awt.Font("Verdana", 1, 15)); // NOI18N
+        txtdate.setForeground(new java.awt.Color(255, 255, 255));
         txtdate.setText("0");
+        jDesktopPane1.add(txtdate, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 11, 129, 28));
 
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/gif/icons8-date (1).gif"))); // NOI18N
+        jDesktopPane1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 15, -1, -1));
+
+        jPanel9.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel9.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
+        jPanel9.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        srch.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
+        srch.setForeground(new java.awt.Color(204, 204, 204));
+        srch.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/gif/icons8-search.gif"))); // NOI18N
+        srch.setText("Search");
+        jPanel9.add(srch, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 0, 101, 40));
+
+        srchf.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
+        srchf.setBorder(null);
+        srchf.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        srchf.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                srchfMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                srchfMouseExited(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                srchfMouseReleased(evt);
+            }
+        });
+        srchf.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                srchfActionPerformed(evt);
+            }
+        });
+        srchf.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                srchfKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                srchfKeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                srchfKeyTyped(evt);
+            }
+        });
+        jPanel9.add(srchf, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 10, 130, -1));
+
+        jDesktopPane1.add(jPanel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(660, 30, 210, -1));
 
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/gif/icons8-time (1).gif"))); // NOI18N
+        jDesktopPane1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(214, 11, -1, -1));
 
-        jDesktopPane1.setLayer(jScrollPane1, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jDesktopPane1.setLayer(p5, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jDesktopPane1.setLayer(jButton1, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jDesktopPane1.setLayer(txttime, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jDesktopPane1.setLayer(txtdate, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jDesktopPane1.setLayer(jLabel2, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jDesktopPane1.setLayer(jLabel3, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jDesktopPane1.setLayer(jDateChooser1, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        dateChoose.setDateFormatString("yyyy-MM-dd");
+        jDesktopPane1.add(dateChoose, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 30, 200, 40));
 
-        javax.swing.GroupLayout jDesktopPane1Layout = new javax.swing.GroupLayout(jDesktopPane1);
-        jDesktopPane1.setLayout(jDesktopPane1Layout);
-        jDesktopPane1Layout.setHorizontalGroup(
-            jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jDesktopPane1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
-                    .addComponent(p5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jDesktopPane1Layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtdate, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(45, 45, 45)
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txttime, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 359, Short.MAX_VALUE)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(17, 17, 17)))
-                .addContainerGap())
-            .addGroup(jDesktopPane1Layout.createSequentialGroup()
-                .addGap(328, 328, 328)
-                .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jDesktopPane1Layout.setVerticalGroup(
-            jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jDesktopPane1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jDesktopPane1Layout.createSequentialGroup()
-                        .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jDesktopPane1Layout.createSequentialGroup()
-                                .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGap(39, 39, 39))
-                            .addGroup(jDesktopPane1Layout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 351, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(29, 29, 29))
-                    .addGroup(jDesktopPane1Layout.createSequentialGroup()
-                        .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(txtdate, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(txttime, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(391, 391, 391)))
-                .addComponent(p5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(47, 47, 47))
-        );
+        tableAd.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+
+            }
+        ));
+        jScrollPane1.setViewportView(tableAd);
+
+        jDesktopPane1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 85, 870, 351));
 
         jPanel2.add(jDesktopPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 70, 890, 550));
 
@@ -531,7 +591,7 @@ public class adminDash extends javax.swing.JFrame {
         else
         {
            acc_name.setText(""+sess.getFname());
-           acc_lname.setText(""+sess.getLname());
+           
            try{
               ResultSet rs = db.getData("SELECT * FROM tbl_user WHERE u_id = '"+sess.getUid()+"'");
               
@@ -589,7 +649,9 @@ public class adminDash extends javax.swing.JFrame {
     }//GEN-LAST:event_p5MouseEntered
 
     private void p5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p5MouseClicked
-        // TODO add your handling code here:
+      DefaultTableModel model = (DefaultTableModel)tableAd.getModel();
+        model.setRowCount(0);
+        displayData();      
     }//GEN-LAST:event_p5MouseClicked
 
     private void p3MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p3MouseExited
@@ -601,38 +663,129 @@ public class adminDash extends javax.swing.JFrame {
     }//GEN-LAST:event_p3MouseEntered
 
     private void p3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p3MouseClicked
-      
-       
-        dbconnect db = new dbconnect();
-        int row = tableAd.getSelectedRow();
+    dbconnect db = new dbconnect();
+int row = tableAd.getSelectedRow();
 
-        if(row < 0)
-        {
-            JOptionPane.showMessageDialog(null,"Please Select");
+if (row < 0) {
+    JOptionPane.showMessageDialog(null, "Please Select");
+} else {
+    TableModel mod = tableAd.getModel();
+    try {
+        String u_id = mod.getValueAt(row, 2).toString(); // Assuming column index 2 contains u_id
+
+        // Construct the SQL query with proper syntax and concatenation
+        String sql = "SELECT t.transID, t.roomID, t.u_id, t.name, t.Contact, r.roomType, r.roomNo, r.r_price, t.Check_In, t.Check_Out, t.totalPayment, t.status, u.u_fname, u.u_image " +
+                     "FROM tbl_transaction t " +
+                     "JOIN tbl_room r ON t.roomID = r.roomID " +
+                     "JOIN tbl_user u ON t.u_id = u.u_id " +
+                     "WHERE t.u_id = '" + u_id + "'";
+
+        ResultSet rs = db.getData(sql);
+
+        if (rs.next()) {
+            // Extract data from ResultSet and set to corresponding components in checkOut frame
+            checkOut cout = new checkOut();
+            cout.tid.setText(rs.getString("transID"));
+            cout.cnm.setText(rs.getString("name"));
+            cout.cno.setText(rs.getString("Contact"));
+            cout.cki.setText(rs.getString("Check_In"));
+            cout.cko.setText(rs.getString("Check_Out"));
+            cout.rid.setText(rs.getString("roomID"));
+            cout.rtp.setText(rs.getString("roomType"));
+            cout.rno.setText(rs.getString("roomNo"));
+            cout.rp.setText(rs.getString("r_price"));
+            cout.tprc.setText(rs.getString("totalPayment"));
+            cout.tnm.setText(rs.getString("u_fname"));
+            cout.tuid.setText(rs.getString("u_id"));
+
+                        // Handle image
+          
+
+            // Check if Check_Out is null before calculating nod (number of days)
+            String checkOutDate = rs.getString("Check_Out");
+            String checkInDate = rs.getString("Check_In").split(" ")[0]; // Extract date part
+            LocalDate checkIn = LocalDate.parse(checkInDate);
+
+            if (checkOutDate != null && !checkOutDate.isEmpty()) {
+                try {
+                    LocalDate checkOut;
+                    if (checkOutDate.length() == 10) {
+                        // If Check_Out is in the format "yyyy-MM-dd"
+                        checkOut = LocalDate.parse(checkOutDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                    } else {
+                        // If Check_Out is in the format "yyyy-MM-dd HH:mm:ss.S"
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
+                        LocalDateTime checkOutDateTime = LocalDateTime.parse(checkOutDate, formatter);
+                        checkOut = checkOutDateTime.toLocalDate();
+                    }
+                    long nod = ChronoUnit.DAYS.between(checkIn, checkOut);
+                    cout.nod.setText(String.valueOf(nod)); // Set the total number of days (nod)
+                } catch (DateTimeParseException e) {
+                    System.err.println("Error parsing Check_Out date: " + checkOutDate);
+                    e.printStackTrace();
+                    cout.nod.setText("Parsing Error");
+                }
+            } else {
+                LocalDate currentDate = LocalDate.now(); // Get current date
+                cout.cko.setText(currentDate.toString()); // Set Check_Out as current date
+                long nod = ChronoUnit.DAYS.between(checkIn, currentDate);
+                cout.nod.setText(String.valueOf(nod)); // Set the total number of days (nod)
+
+                // Calculate total payment
+                double roomPrice = Double.parseDouble(rs.getString("r_price"));
+                double totalPayment = nod * roomPrice;
+                cout.tprc.setText(String.valueOf(totalPayment));
+            }
+
+            cout.setVisible(true);
+            this.dispose();
+        } else {
+            JOptionPane.showMessageDialog(null, "Record not found");
         }
-        else
-        {
-            TableModel mod = tableAd.getModel();
-           try{
 
-           ResultSet rs = db.getData("SELECT * FROM tbl_cost WHERE roomNo = '"+mod.getValueAt(row, 3)+"'");
+        rs.close(); // Close the ResultSet
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+        JOptionPane.showMessageDialog(null, "Error: " + ex.getMessage());
+    }
+}
 
-           if(rs.next()){
-               checkOut cout = new checkOut();
-               cout.setVisible(true);
-               this.dispose();
-            
-        }
-        
-        } catch (SQLException ex) 
-        {
-             Logger.getLogger(manageRooms.class.getName()).log(Level.SEVERE, null, ex);
-         }
-       }
-       
-       
+
+   
        
     }//GEN-LAST:event_p3MouseClicked
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void srchfMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_srchfMouseEntered
+
+    }//GEN-LAST:event_srchfMouseEntered
+
+    private void srchfMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_srchfMouseExited
+
+    }//GEN-LAST:event_srchfMouseExited
+
+    private void srchfMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_srchfMouseReleased
+        srch.setText("Search");
+    }//GEN-LAST:event_srchfMouseReleased
+
+    private void srchfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_srchfActionPerformed
+      
+    }//GEN-LAST:event_srchfActionPerformed
+
+    private void srchfKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_srchfKeyPressed
+
+    }//GEN-LAST:event_srchfKeyPressed
+
+    private void srchfKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_srchfKeyReleased
+
+    }//GEN-LAST:event_srchfKeyReleased
+
+    private void srchfKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_srchfKeyTyped
+        srch.setText("");
+    }//GEN-LAST:event_srchfKeyTyped
 
     /**
      * @param args the command line arguments
@@ -673,12 +826,11 @@ public class adminDash extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel acc_lname;
     private javax.swing.JLabel acc_name;
     private javax.swing.JLabel acc_name1;
+    private com.toedter.calendar.JDateChooser dateChoose;
     private javax.swing.JLabel img;
     private javax.swing.JButton jButton1;
-    private com.toedter.calendar.JDateChooser jDateChooser1;
     private javax.swing.JDesktopPane jDesktopPane1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel11;
@@ -691,11 +843,14 @@ public class adminDash extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel p3;
     private javax.swing.JPanel p4;
     private javax.swing.JPanel p5;
     private javax.swing.JPanel p6;
+    private javax.swing.JLabel srch;
+    private javax.swing.JTextField srchf;
     private javax.swing.JTable tableAd;
     private javax.swing.JLabel txtdate;
     private javax.swing.JLabel txttime;

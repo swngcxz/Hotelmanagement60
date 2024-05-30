@@ -12,8 +12,12 @@ import java.awt.Color;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.RowFilter;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 import net.proteanit.sql.DbUtils;
 import register.userForm;
 
@@ -29,12 +33,21 @@ public class roomAvailability extends javax.swing.JFrame {
     public roomAvailability() {
         initComponents();
         displayRoom();
+        
+        srchf.addKeyListener(new java.awt.event.KeyAdapter() {
+        public void keyReleased(java.awt.event.KeyEvent evt) {
+            filterTable(srchf.getText(), tableAvail); 
+            
+        }
+        
+        });
     }
     
     public void displayRoom(){
-        try{
+       try{
             dbconnect dbc = new dbconnect();
-            ResultSet rs = dbc.getData("SELECT roomNo, roomType, price FROM tbl_rooms");
+            ResultSet rs = dbc.getData("SELECT t.transID, t.roomID, t.u_id, t.name, t.Contact, r.roomType, r.roomNo, t.Check_In, t.Check_Out, t.status "
+                    + "\n FROM tbl_transaction t\n JOIN tbl_room r ON t.roomID = r.roomID;");
             tableAvail.setModel(DbUtils.resultSetToTableModel(rs));
              rs.close();
         }catch(SQLException ex){
@@ -42,6 +55,61 @@ public class roomAvailability extends javax.swing.JFrame {
         
         }
     }
+    
+    private void filterTable(String searchText, JTable table) 
+            {
+                TableRowSorter<TableModel> sorter = new TableRowSorter<>(table.getModel());
+                table.setRowSorter(sorter);
+
+                if (searchText.trim().length() == 0) {
+                    sorter.setRowFilter(null);
+                } else {
+                    sorter.setRowFilter(RowFilter.regexFilter("(?i)" + searchText));
+                }
+
+                applyHighlightRenderer(searchText, table);
+            }   
+
+
+           private void applyHighlightRenderer(String searchText, JTable table) 
+           {
+                for (int i = 0; i < table.getColumnCount(); i++) 
+                {
+                    table.getColumnModel().getColumn(i).setCellRenderer(new HighlightRenderer(searchText));
+                }
+            }
+
+            class HighlightRenderer extends DefaultTableCellRenderer 
+            {
+                private String searchText;
+
+                public HighlightRenderer(String searchText) 
+                {
+                    this.searchText = searchText;
+                }
+
+                @Override
+                protected void setValue(Object value) {
+                    if (value != null && searchText != null && !searchText.isEmpty()) 
+                    {
+                        String stringValue = value.toString();
+                        String lcSearchText = searchText.toLowerCase();
+                        String lcStringValue = stringValue.toLowerCase();
+
+                        int startIdx = lcStringValue.indexOf(lcSearchText);
+                        if (startIdx >= 0) 
+                        {
+                            String highlightedText = "<html>" + stringValue.substring(0, startIdx) +
+                                    "<span style='background: yellow;'>" +
+                                    stringValue.substring(startIdx, startIdx + searchText.length()) +
+                                    "</span>" + stringValue.substring(startIdx + searchText.length()) + "</html>";
+                            super.setValue(highlightedText);
+                            return;
+                        }
+                    }
+                    super.setValue(value);
+                }
+            }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -61,11 +129,15 @@ public class roomAvailability extends javax.swing.JFrame {
         jLabel13 = new javax.swing.JLabel();
         p3 = new javax.swing.JPanel();
         jLabel11 = new javax.swing.JLabel();
+        jPanel9 = new javax.swing.JPanel();
+        srch = new javax.swing.JLabel();
+        srchf = new javax.swing.JTextField();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setUndecorated(true);
 
         jPanel1.setBackground(new java.awt.Color(204, 255, 204));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -80,7 +152,7 @@ public class roomAvailability extends javax.swing.JFrame {
         ));
         jScrollPane2.setViewportView(tableAvail);
 
-        jPanel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 870, -1));
+        jPanel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 160, 1000, -1));
 
         p5.setBackground(new java.awt.Color(102, 102, 102));
         p5.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -108,7 +180,7 @@ public class roomAvailability extends javax.swing.JFrame {
             p5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(p5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel15, javax.swing.GroupLayout.DEFAULT_SIZE, 350, Short.MAX_VALUE)
+                .addComponent(jLabel15, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
                 .addContainerGap())
         );
         p5Layout.setVerticalGroup(
@@ -119,7 +191,7 @@ public class roomAvailability extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jPanel1.add(p5, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 440, 370, 60));
+        jPanel1.add(p5, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 590, 400, 60));
 
         p4.setBackground(new java.awt.Color(0, 153, 0));
         p4.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -167,7 +239,7 @@ public class roomAvailability extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jPanel1.add(p4, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 440, 240, 60));
+        jPanel1.add(p4, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 590, 320, 60));
 
         p3.setBackground(new java.awt.Color(102, 0, 0));
         p3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -206,13 +278,59 @@ public class roomAvailability extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jPanel1.add(p3, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 440, 170, 60));
+        jPanel1.add(p3, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 590, 250, 60));
+
+        jPanel9.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel9.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
+        jPanel9.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        srch.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
+        srch.setForeground(new java.awt.Color(204, 204, 204));
+        srch.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/gif/icons8-search.gif"))); // NOI18N
+        srch.setText("Search");
+        jPanel9.add(srch, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 0, 101, 40));
+
+        srchf.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
+        srchf.setBorder(null);
+        srchf.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        srchf.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                srchfMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                srchfMouseExited(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                srchfMouseReleased(evt);
+            }
+        });
+        srchf.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                srchfActionPerformed(evt);
+            }
+        });
+        srchf.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                srchfKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                srchfKeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                srchfKeyTyped(evt);
+            }
+        });
+        jPanel9.add(srchf, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 10, 220, 20));
+
+        jPanel1.add(jPanel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(770, 90, 270, 40));
 
         jPanel2.setBackground(new java.awt.Color(255, 153, 0));
+        jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel1.setFont(new java.awt.Font("Copperplate Gothic Bold", 1, 36)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Copperplate Gothic Bold", 1, 35)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Room Availability");
+        jLabel1.setText("COSTUMER DETAILS");
+        jPanel2.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(14, 11, 1002, 50));
 
         jLabel10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/exit.png"))); // NOI18N
         jLabel10.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -221,42 +339,24 @@ public class roomAvailability extends javax.swing.JFrame {
                 jLabel10MouseClicked(evt);
             }
         });
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(14, 14, 14)
-                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 823, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel10)
-                .addContainerGap())
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
-        );
+        jPanel2.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(1022, 11, -1, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 903, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 1082, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE)
                 .addGap(0, 0, 0)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 527, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0))
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 686, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(20, 20, 20))
         );
 
         pack();
@@ -278,8 +378,7 @@ public class roomAvailability extends javax.swing.JFrame {
     }//GEN-LAST:event_p5MouseExited
 
     private void jLabel10MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel10MouseClicked
-        adminDB adb = new adminDB();
-        adb.setVisible(true);
+       
         this.dispose();
     }//GEN-LAST:event_jLabel10MouseClicked
 
@@ -314,6 +413,34 @@ public class roomAvailability extends javax.swing.JFrame {
     private void p3MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p3MouseExited
         p3.setBackground(new Color(102,0,0));
     }//GEN-LAST:event_p3MouseExited
+
+    private void srchfMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_srchfMouseEntered
+
+    }//GEN-LAST:event_srchfMouseEntered
+
+    private void srchfMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_srchfMouseExited
+
+    }//GEN-LAST:event_srchfMouseExited
+
+    private void srchfMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_srchfMouseReleased
+        srch.setText("Search");
+    }//GEN-LAST:event_srchfMouseReleased
+
+    private void srchfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_srchfActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_srchfActionPerformed
+
+    private void srchfKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_srchfKeyPressed
+
+    }//GEN-LAST:event_srchfKeyPressed
+
+    private void srchfKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_srchfKeyReleased
+
+    }//GEN-LAST:event_srchfKeyReleased
+
+    private void srchfKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_srchfKeyTyped
+        srch.setText("");
+    }//GEN-LAST:event_srchfKeyTyped
 
     /**
      * @param args the command line arguments
@@ -359,10 +486,13 @@ public class roomAvailability extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel15;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JPanel p3;
     private javax.swing.JPanel p4;
     private javax.swing.JPanel p5;
+    private javax.swing.JLabel srch;
+    private javax.swing.JTextField srchf;
     private javax.swing.JTable tableAvail;
     // End of variables declaration//GEN-END:variables
 }

@@ -6,6 +6,7 @@
 package Rooms;
 
 import admin.adminDash;
+
 import configgg.Session;
 import configgg.dbconnect;
 import java.awt.Color;
@@ -15,23 +16,28 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JTextField;
+import javax.swing.JTable;
+import javax.swing.RowFilter;
 import javax.swing.Timer;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 import net.proteanit.sql.DbUtils;
-import register.userForm;
+
 
 /**
  *
@@ -50,120 +56,148 @@ public class manageRooms extends javax.swing.JFrame {
         date();
         time();
         voidHide();
-    }
-    
-    
-    
-      private void date(){
+        getTotalCost();
         
-        Date d = new Date();
-        
-        SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
-         
-        String dt = sdf.format(d);
-        txtdate.setText(dt);
-             
-    }
-      
-    
-        Timer t;
-        SimpleDateFormat st;
-    
-    private void time(){
 
-        t = new Timer(0, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                
-                Date dt = new Date();
-                st = new SimpleDateFormat("hh:mm:ss a");
-                
-                String tm = st.format(dt);
-                txttime.setText(tm);
-                
+        
+        srchf.addKeyListener(new java.awt.event.KeyAdapter() {
+        public void keyReleased(java.awt.event.KeyEvent evt) {
+            filterTable(srchf.getText(), cosTable); 
+            filterTable(srchf.getText(), tableRoom);
+        }
+
+       }); 
+        
+        srchf.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                filterTable(srchf.getText(), cosTable); 
+                filterTable(srchf.getText(), tableRoom);
             }
-        });
-        
-        t.start();
-        
+        }); 
     }
     
-    private void voidHide(){
-        dbconnect db = new dbconnect();
-        Session sess = Session.getInstance();
-        try{
-              ResultSet rs = db.getData("SELECT * FROM tbl_user WHERE u_id = '"+sess.getUid()+"'");
-             
-              if(rs.next()){
-                  String type = rs.getString("u_type");
-                  
-                  if(type.equals("Admin")){
-                      System.out.println("revealed");
-                  }else{
-                      vd.hide();
+    
+    //TIME//
+        private void date(){
+
+           Date d = new Date();
+
+           SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy");
+
+
+           String dt = sdf.format(d);
+
+           txtdate.setText(dt);        
+           cin.setText(dt);
+
+       }
+
+           Timer t;
+           SimpleDateFormat st;
+
+            private void time() {
+         Timer t = new Timer(1000, new ActionListener() {
+             @Override
+             public void actionPerformed(ActionEvent ae) {
+                 Date dt = new Date();
+                 SimpleDateFormat st = new SimpleDateFormat("hh:mm:ss a");
+                 String tm = st.format(dt);
+
+                 // Update the timeLabel with the formatted time string
+                 txttime.setText("" + tm);
+             }
+         });
+
+         t.start();
+     }
+    
+        
+    //FOR SUPER ADMIN SOON TO FIX   
+        private void voidHide(){
+            dbconnect db = new dbconnect();
+            Session sess = Session.getInstance();
+            try{
+                  ResultSet rs = db.getData("SELECT * FROM tbl_user WHERE u_id = '"+sess.getUid()+"'");
+
+                  if(rs.next()){
+                      String type = rs.getString("u_type");
+
+                      if(type.equals("Admin")){
+                          System.out.println("revealed");
+                      }else{
+                          vd.hide();
+                      }
                   }
-              }
-              
-              
-           }catch(SQLException ex){
-               System.out.println(""+ex);
-           }
-    }
-    
-    private void rt(){
-        dbconnect db = new dbconnect();
-        try{
-            ResultSet res = db.getData("SELECT DISTINCT roomType FROM tbl_rooms WHERE r_status = 'Active' ");
-            
-            while(res.next()){
-                String rm = res.getString("roomType");
-                txtrt.addItem(rm);
-                
+
+
+               }catch(SQLException ex){
+                   System.out.println(""+ex);
+               }
+        }
+
+        private void rt(){
+            dbconnect db = new dbconnect();
+            try{
+                ResultSet res = db.getData("SELECT DISTINCT roomType FROM tbl_room WHERE r_status = 'Active' ");
+
+                while(res.next()){
+                    String rm = res.getString("roomType");
+                    txtrt.addItem(rm);
+
+                }
+            }catch(SQLException e){
+                System.out.println(""+e);
             }
-        }catch(SQLException e){
-            System.out.println(""+e);
+            
+            
+
         }
-        
-    }
     
-     public void displayData(){
-        try{
-            dbconnect dbc = new dbconnect();
-            ResultSet rs = dbc.getData("SELECT Name, ContactNo, RoomType, RoomNo, Check_In, Check_Out, c_balance FROM tbl_cost");
-            cosTable.setModel(DbUtils.resultSetToTableModel(rs));
-             rs.close();
-        }catch(SQLException ex){
-            System.out.println("Errors: "+ex.getMessage());
-        
+ 
+    //DISPLAY TABLES
+        public void displayData(){
+            try{
+                dbconnect dbc = new dbconnect();
+                ResultSet rs = dbc.getData("SELECT t.transID, t.roomID, t.u_id, t.name, t.Contact, r.roomType, r.roomNo, t.Check_In, t.Check_Out, t.status "
+                        + "\n FROM tbl_transaction t\n JOIN tbl_room r ON t.roomID = r.roomID;");
+                cosTable.setModel(DbUtils.resultSetToTableModel(rs));
+                 rs.close();
+            }catch(SQLException ex){
+                System.out.println("Errors: "+ex.getMessage());
+
+            }  
         }
-        
-    
-    }
-    
-    
-     public void displayRoom(){
-        try{
-            dbconnect dbc = new dbconnect();
-            ResultSet rs = dbc.getData("SELECT roomNo, roomType,price, r_status FROM tbl_rooms");
-            tableRoom.setModel(DbUtils.resultSetToTableModel(rs));
-             rs.close();
-        }catch(SQLException ex){
-            System.out.println("Errors: "+ex.getMessage());
-        
+
+
+        public void displayRoom(){
+            try{
+                dbconnect dbc = new dbconnect();
+                ResultSet rs = dbc.getData("SELECT roomNo, roomType, r_price, r_status FROM tbl_room");
+                tableRoom.setModel(DbUtils.resultSetToTableModel(rs));
+                 rs.close();
+            }catch(SQLException ex){
+                System.out.println("Errors: "+ex.getMessage());
+
+            }
         }
-    }
+     
+     
+     
+     
+    
+    
+    
     
   public static int getHeightFromWidth(String imagePath, int desiredWidth) {
         try {
-            // Read the image file
+          
             File imageFile = new File(imagePath);
             BufferedImage image = ImageIO.read(imageFile);
             
-            // Get the original width and height of the image
+          
             int originalWidth = image.getWidth();
             int originalHeight = image.getHeight();
-            
-            // Calculate the new height based on the desired width and the aspect ratio
+        
             int newHeight = (int) ((double) desiredWidth / originalWidth * originalHeight);
             
             return newHeight;
@@ -191,8 +225,215 @@ public class manageRooms extends javax.swing.JFrame {
         return image;
     }
     
+ 
+   
     
     
+    //SEARCH BAR & HIGHLIGHT//
+    
+    
+            private void filterTable(String searchText, JTable table) 
+            {
+                TableRowSorter<TableModel> sorter = new TableRowSorter<>(table.getModel());
+                table.setRowSorter(sorter);
+
+                if (searchText.trim().length() == 0) {
+                    sorter.setRowFilter(null);
+                } else {
+                    sorter.setRowFilter(RowFilter.regexFilter("(?i)" + searchText));
+                }
+
+                applyHighlightRenderer(searchText, table);
+            }   
+
+
+           private void applyHighlightRenderer(String searchText, JTable table) 
+           {
+                for (int i = 0; i < table.getColumnCount(); i++) 
+                {
+                    table.getColumnModel().getColumn(i).setCellRenderer(new HighlightRenderer(searchText));
+                }
+            }
+
+            class HighlightRenderer extends DefaultTableCellRenderer 
+            {
+                private String searchText;
+
+                public HighlightRenderer(String searchText) 
+                {
+                    this.searchText = searchText;
+                }
+
+                @Override
+                protected void setValue(Object value) {
+                    if (value != null && searchText != null && !searchText.isEmpty()) 
+                    {
+                        String stringValue = value.toString();
+                        String lcSearchText = searchText.toLowerCase();
+                        String lcStringValue = stringValue.toLowerCase();
+
+                        int startIdx = lcStringValue.indexOf(lcSearchText);
+                        if (startIdx >= 0) 
+                        {
+                            String highlightedText = "<html>" + stringValue.substring(0, startIdx) +
+                                    "<span style='background: yellow;'>" +
+                                    stringValue.substring(startIdx, startIdx + searchText.length()) +
+                                    "</span>" + stringValue.substring(startIdx + searchText.length()) + "</html>";
+                            super.setValue(highlightedText);
+                            return;
+                        }
+                    }
+                    super.setValue(value);
+                }
+            }
+
+    
+    public void getTotalCost()
+    {
+        Date d = new Date();
+
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-mm-yyyy");
+
+            String dt = sdf.format(d);
+
+            Date checkInDate = d;
+            Date checkOutDate = cout.getDate();
+
+            // Ensure both check-in and check-out dates are selected
+            if (checkInDate != null && checkOutDate != null) {
+                // Calculate the total number of days between check-in and check-out dates
+                long totalDays = getDifferenceInDays(checkInDate, checkOutDate);
+                String query = "SELECT * FROM `tbl_room` ORDER BY `tbl_room`.`r_price` ASC";
+                double roomRate = 0.0;
+                double totalCost = totalDays * roomRate;
+                    
+                    tprc.setText(""+totalCost);
+                    
+            }
+            
+    }
+    
+     private long getDifferenceInDays(Date startDate, Date endDate) 
+     {
+        // Validate dates
+         
+        if (endDate.before(startDate)) {
+            // Swap dates if end date is before start date
+            Date tempDate = startDate;
+            startDate = endDate;
+       
+         endDate = tempDate;
+        }
+
+        long diffInMillies = Math.abs(endDate.getTime() - startDate.getTime());
+        long days = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+
+        System.out.println("Start Date: " + startDate);
+        System.out.println("End Date: " + endDate);
+        System.out.println("Milliseconds Difference: " + diffInMillies);
+        System.out.println("Days Difference: " + days);
+
+        return days;
+    }
+     
+   private double calculateTotalPayment() {
+    dbconnect db = new dbconnect();
+    double totalPayment = 0;
+
+    String roomType = txtrt.getSelectedItem().toString(); // Assuming txtrt is your combo box for room type
+    String roomNumber = txtrno.getSelectedItem().toString(); // Assuming txtrno is your combo box for room number
+
+    Date checkInDate = new Date(); // Assuming you get the check-in date from somewhere
+    Date checkOutDate = cout.getDate(); // Assuming cout is your date picker for check-out date
+
+    // Check if both room type and room number are selected
+    if (!roomType.isEmpty() && !roomNumber.isEmpty()) {
+        // Query the database to get the room price based on room type and room number
+        String query = "SELECT r_price FROM tbl_room WHERE roomType = ? AND roomNo = ?";
+        try {
+            PreparedStatement pst = db.connect.prepareStatement(query);
+            pst.setString(1, roomType);
+            pst.setString(2, roomNumber);
+            ResultSet rs = pst.executeQuery();
+
+            if (rs.next()) {
+                double roomPrice = rs.getDouble("r_price");
+
+                if (checkOutDate == null) {
+                    // Display room price if checkout date is not selected
+                    totalPayment = roomPrice;
+                } else {
+                    // Calculate total number of days between check-in and check-out dates
+                    long totalDays = getDifferenceInDays(checkInDate, checkOutDate);
+                    totalPayment = totalDays * roomPrice;
+                }
+            } else {
+                tprc.setText("Room data not found");
+            }
+
+            rs.close();
+            pst.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            tprc.setText("Error calculating total payment");
+        }
+    } else {
+        // Handle case where room type or room number is not selected
+        if (roomType.isEmpty()) {
+            // Prompt user to select room type
+            tprc.setText("Please select a room type");
+        } else {
+            // Prompt user to select room number
+            tprc.setText("Please select a room number");
+        }
+    }
+
+    return totalPayment;
+}
+
+     
+     
+     public int getRoomID(String roomNumber) {
+    int roomId = -1; // Default value or error code if room ID is not found
+    dbconnect db = new dbconnect(); // Initialize your database connection
+
+    try {
+        String query = "SELECT roomID FROM tbl_room WHERE roomNo = ?";
+        PreparedStatement pst = db.connect.prepareStatement(query);
+        pst.setString(1, roomNumber);
+        ResultSet rs = pst.executeQuery();
+
+        if (rs.next()) {
+            roomId = rs.getInt("roomID");
+        }
+
+        rs.close();
+        pst.close();
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+        // Handle the exception or log it as needed
+    }
+
+    return roomId;
+    
+    
+}
+     
+     
+     private void resetComponents() {
+    // Reset text fields and combo boxes to default values
+    rt2.setText(""); // Assuming rt2 is your JTextField
+    rt3.setText(""); // Assuming rt3 is your JTextField
+    cout.setDate(null); // Assuming cout is your JDateChooser
+    txtrt.setSelectedIndex(0); // Reset combo box selection
+    txtrno.setSelectedIndex(0); // Reset combo box selection
+    tprc.setText("0"); // Set total payment to zero
+    id.setText("");
+    rt5.setText("");
+}
+    
+  
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -207,14 +448,17 @@ public class manageRooms extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
+        jLabel8 = new javax.swing.JLabel();
+        txttime = new javax.swing.JLabel();
+        jLabel25 = new javax.swing.JLabel();
+        txtdate = new javax.swing.JLabel();
         vd = new javax.swing.JPanel();
         jLabel11 = new javax.swing.JLabel();
         p4 = new javax.swing.JPanel();
         jLabel13 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         pw = new javax.swing.JTextField();
-        jLabel6 = new javax.swing.JLabel();
+        roomid = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
@@ -224,8 +468,6 @@ public class manageRooms extends javax.swing.JFrame {
         jLabel20 = new javax.swing.JLabel();
         rt5 = new javax.swing.JTextField();
         jLabel21 = new javax.swing.JLabel();
-        p9 = new javax.swing.JPanel();
-        jLabel22 = new javax.swing.JLabel();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -245,19 +487,27 @@ public class manageRooms extends javax.swing.JFrame {
         jLabel24 = new javax.swing.JLabel();
         txtrt = new javax.swing.JComboBox<>();
         txtrno = new javax.swing.JComboBox<>();
-        txttime = new javax.swing.JLabel();
-        jLabel25 = new javax.swing.JLabel();
-        txtdate = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         cout = new com.toedter.calendar.JDateChooser();
         p10 = new javax.swing.JPanel();
         jLabel26 = new javax.swing.JLabel();
-        jLabel16 = new javax.swing.JLabel();
-        rt6 = new javax.swing.JTextField();
+        tprc = new javax.swing.JTextField();
         jLabel27 = new javax.swing.JLabel();
         jLabel17 = new javax.swing.JLabel();
         id = new javax.swing.JTextField();
         jLabel28 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        cin = new javax.swing.JTextField();
+        jLabel29 = new javax.swing.JLabel();
+        jPanel9 = new javax.swing.JPanel();
+        srch = new javax.swing.JLabel();
+        srchf = new javax.swing.JTextField();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel18 = new javax.swing.JLabel();
+        vd1 = new javax.swing.JPanel();
+        jLabel16 = new javax.swing.JLabel();
+        p11 = new javax.swing.JPanel();
+        jLabel30 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -270,11 +520,13 @@ public class manageRooms extends javax.swing.JFrame {
         jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel1.setBackground(new java.awt.Color(0, 153, 0));
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel1.setFont(new java.awt.Font("Copperplate Gothic Bold", 1, 36)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Copperplate Gothic Bold", 1, 40)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(204, 204, 204));
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Check-In");
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 0, 251, 69));
 
         jButton1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jButton1.setText("BACK");
@@ -284,29 +536,27 @@ public class manageRooms extends javax.swing.JFrame {
                 jButton1MouseClicked(evt);
             }
         });
+        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1230, 20, 73, 30));
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(114, 114, 114)
-                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 1066, Short.MAX_VALUE)
-                .addGap(29, 29, 29)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
-        );
+        jLabel8.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
+        jLabel8.setForeground(new java.awt.Color(204, 204, 204));
+        jLabel8.setText("Time");
+        jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 0, -1, 28));
 
-        jPanel2.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1300, -1));
+        txttime.setFont(new java.awt.Font("Verdana", 1, 20)); // NOI18N
+        txttime.setText("0");
+        jPanel1.add(txttime, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 30, -1, 28));
+
+        jLabel25.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
+        jLabel25.setForeground(new java.awt.Color(204, 204, 204));
+        jLabel25.setText("Date");
+        jPanel1.add(jLabel25, new org.netbeans.lib.awtextra.AbsoluteConstraints(593, 0, -1, 28));
+
+        txtdate.setFont(new java.awt.Font("Verdana", 1, 20)); // NOI18N
+        txtdate.setText("0");
+        jPanel1.add(txtdate, new org.netbeans.lib.awtextra.AbsoluteConstraints(603, 30, -1, 28));
+
+        jPanel2.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1310, -1));
 
         vd.setBackground(new java.awt.Color(102, 0, 0));
         vd.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -345,7 +595,7 @@ public class manageRooms extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jPanel2.add(vd, new org.netbeans.lib.awtextra.AbsoluteConstraints(970, 280, 220, 60));
+        jPanel2.add(vd, new org.netbeans.lib.awtextra.AbsoluteConstraints(920, 360, 220, 60));
 
         p4.setBackground(new java.awt.Color(0, 153, 0));
         p4.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -393,34 +643,29 @@ public class manageRooms extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jPanel2.add(p4, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 310, 280, 60));
-
-        jLabel8.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
-        jLabel8.setText("Time");
-        jPanel2.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 70, -1, 28));
+        jPanel2.add(p4, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 390, 280, 60));
 
         jLabel10.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
         jLabel10.setText("Name:");
-        jPanel2.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 150, 92, 28));
+        jPanel2.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 220, 92, 28));
 
         pw.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jPanel2.add(pw, new org.netbeans.lib.awtextra.AbsoluteConstraints(-20, 90, -1, -1));
 
-        jLabel6.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
-        jLabel6.setText("Room type:");
-        jPanel2.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 90, 92, 28));
+        roomid.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
+        jPanel2.add(roomid, new org.netbeans.lib.awtextra.AbsoluteConstraints(950, 100, 92, 28));
 
         jLabel5.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
         jLabel5.setText("Contact no.:");
-        jPanel2.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 200, 110, 28));
+        jPanel2.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 280, 110, 28));
 
         jLabel3.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
         jLabel3.setText("Room No.:");
-        jPanel2.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 130, 92, 28));
+        jPanel2.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 210, 92, 28));
 
         jLabel14.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
         jLabel14.setText("Room Price:");
-        jPanel2.add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 190, -1, 28));
+        jPanel2.add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 260, -1, 28));
 
         rt2.setBackground(new java.awt.Color(204, 255, 255));
         rt2.setFont(rt2.getFont().deriveFont(rt2.getFont().getSize()+3f));
@@ -430,11 +675,11 @@ public class manageRooms extends javax.swing.JFrame {
                 rt2ActionPerformed(evt);
             }
         });
-        jPanel2.add(rt2, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 140, 240, 40));
+        jPanel2.add(rt2, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 210, 260, 40));
 
         jLabel19.setForeground(new java.awt.Color(51, 51, 51));
         jLabel19.setText("_________________________________________");
-        jPanel2.add(jLabel19, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 150, 250, 50));
+        jPanel2.add(jLabel19, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 220, 250, 50));
 
         rt3.setBackground(new java.awt.Color(204, 255, 255));
         rt3.setFont(rt3.getFont().deriveFont(rt3.getFont().getSize()+3f));
@@ -444,11 +689,11 @@ public class manageRooms extends javax.swing.JFrame {
                 rt3ActionPerformed(evt);
             }
         });
-        jPanel2.add(rt3, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 190, 240, 40));
+        jPanel2.add(rt3, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 270, 260, 40));
 
         jLabel20.setForeground(new java.awt.Color(51, 51, 51));
         jLabel20.setText("_________________________________________");
-        jPanel2.add(jLabel20, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 200, 250, 50));
+        jPanel2.add(jLabel20, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 280, 250, 50));
 
         rt5.setBackground(new java.awt.Color(204, 255, 255));
         rt5.setFont(rt5.getFont().deriveFont(rt5.getFont().getSize()+3f));
@@ -458,50 +703,13 @@ public class manageRooms extends javax.swing.JFrame {
                 rt5ActionPerformed(evt);
             }
         });
-        jPanel2.add(rt5, new org.netbeans.lib.awtextra.AbsoluteConstraints(940, 180, 240, 40));
+        jPanel2.add(rt5, new org.netbeans.lib.awtextra.AbsoluteConstraints(940, 250, 240, 40));
 
         jLabel21.setForeground(new java.awt.Color(51, 51, 51));
         jLabel21.setText("_________________________________________");
-        jPanel2.add(jLabel21, new org.netbeans.lib.awtextra.AbsoluteConstraints(940, 190, 250, 50));
+        jPanel2.add(jLabel21, new org.netbeans.lib.awtextra.AbsoluteConstraints(940, 260, 250, 50));
 
-        p9.setBackground(new java.awt.Color(102, 102, 102));
-        p9.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        p9.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                p9MouseClicked(evt);
-            }
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                p9MouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                p9MouseExited(evt);
-            }
-        });
-
-        jLabel22.setBackground(new java.awt.Color(0, 102, 153));
-        jLabel22.setFont(new java.awt.Font("Verdana", 1, 14)); // NOI18N
-        jLabel22.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel22.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel22.setText("CLEAR");
-
-        javax.swing.GroupLayout p9Layout = new javax.swing.GroupLayout(p9);
-        p9.setLayout(p9Layout);
-        p9Layout.setHorizontalGroup(
-            p9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(p9Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel22, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        p9Layout.setVerticalGroup(
-            p9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(p9Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel22, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        jPanel2.add(p9, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 310, 170, 60));
+        jTabbedPane1.setBackground(new java.awt.Color(255, 255, 255));
 
         jScrollPane1.setViewportView(cosTable);
 
@@ -696,7 +904,7 @@ public class manageRooms extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("ROOM DETAILS", jPanel4);
 
-        jPanel2.add(jTabbedPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 400, 1230, 420));
+        jPanel2.add(jTabbedPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 480, 1230, 420));
         jTabbedPane1.getAccessibleContext().setAccessibleName("ROOM DETAILS");
         jTabbedPane1.getAccessibleContext().setAccessibleDescription("ROOM DETAILS");
 
@@ -708,28 +916,39 @@ public class manageRooms extends javax.swing.JFrame {
                 txtrtActionPerformed(evt);
             }
         });
-        jPanel2.add(txtrt, new org.netbeans.lib.awtextra.AbsoluteConstraints(940, 80, 250, 40));
+        jPanel2.add(txtrt, new org.netbeans.lib.awtextra.AbsoluteConstraints(940, 150, 250, 40));
 
         txtrno.setBackground(new java.awt.Color(204, 255, 255));
         txtrno.setEditable(true);
-        jPanel2.add(txtrno, new org.netbeans.lib.awtextra.AbsoluteConstraints(940, 120, 250, 40));
-
-        txttime.setFont(new java.awt.Font("Verdana", 1, 24)); // NOI18N
-        txttime.setText("0");
-        jPanel2.add(txttime, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 100, -1, 28));
-
-        jLabel25.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
-        jLabel25.setText("Date");
-        jPanel2.add(jLabel25, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 70, -1, 28));
-
-        txtdate.setFont(new java.awt.Font("Verdana", 1, 24)); // NOI18N
-        txtdate.setText("0");
-        jPanel2.add(txtdate, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 100, -1, 28));
+        txtrno.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtrnoActionPerformed(evt);
+            }
+        });
+        jPanel2.add(txtrno, new org.netbeans.lib.awtextra.AbsoluteConstraints(940, 200, 250, 40));
 
         jLabel4.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
         jLabel4.setText("Check-Out");
-        jPanel2.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 180, 92, 28));
-        jPanel2.add(cout, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 170, 240, 40));
+        jPanel2.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 240, 92, 28));
+
+        cout.setDateFormatString("dd MMM yyyy");
+        cout.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        cout.addContainerListener(new java.awt.event.ContainerAdapter() {
+            public void componentAdded(java.awt.event.ContainerEvent evt) {
+                coutComponentAdded(evt);
+            }
+        });
+        cout.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                coutMouseClicked(evt);
+            }
+        });
+        cout.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                coutKeyTyped(evt);
+            }
+        });
+        jPanel2.add(cout, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 230, 240, 40));
 
         p10.setBackground(new java.awt.Color(102, 102, 102));
         p10.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -768,55 +987,198 @@ public class manageRooms extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jPanel2.add(p10, new org.netbeans.lib.awtextra.AbsoluteConstraints(700, 310, 170, 60));
+        jPanel2.add(p10, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 390, 170, 60));
 
-        jLabel16.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
-        jLabel16.setText("Total Price:");
-        jPanel2.add(jLabel16, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 230, -1, 28));
-
-        rt6.setBackground(new java.awt.Color(204, 255, 255));
-        rt6.setFont(rt6.getFont().deriveFont(rt6.getFont().getSize()+3f));
-        rt6.setBorder(null);
-        rt6.addActionListener(new java.awt.event.ActionListener() {
+        tprc.setBackground(new java.awt.Color(204, 255, 255));
+        tprc.setFont(tprc.getFont().deriveFont(tprc.getFont().getSize()+3f));
+        tprc.setBorder(null);
+        tprc.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rt6ActionPerformed(evt);
+                tprcActionPerformed(evt);
             }
         });
-        jPanel2.add(rt6, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 220, 240, 40));
+        jPanel2.add(tprc, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 300, 240, 40));
 
         jLabel27.setForeground(new java.awt.Color(51, 51, 51));
         jLabel27.setText("_________________________________________");
-        jPanel2.add(jLabel27, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 230, 250, 50));
+        jPanel2.add(jLabel27, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 310, 250, 50));
 
         jLabel17.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
         jLabel17.setText("Transaction ID:");
-        jPanel2.add(jLabel17, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 100, 120, 28));
+        jPanel2.add(jLabel17, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 170, 120, 28));
 
+        id.setEditable(false);
         id.setBackground(new java.awt.Color(204, 255, 255));
         id.setFont(id.getFont().deriveFont(id.getFont().getSize()+3f));
         id.setBorder(null);
-        id.setEnabled(false);
         id.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 idActionPerformed(evt);
             }
         });
-        jPanel2.add(id, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 90, 200, 40));
+        jPanel2.add(id, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 160, 220, 40));
 
         jLabel28.setForeground(new java.awt.Color(51, 51, 51));
         jLabel28.setText("_________________________________________");
-        jPanel2.add(jLabel28, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 100, 210, 50));
+        jPanel2.add(jLabel28, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 170, 210, 50));
+
+        jLabel7.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
+        jLabel7.setText("Check-in");
+        jPanel2.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 180, 70, 20));
+
+        cin.setEditable(false);
+        cin.setBackground(new java.awt.Color(204, 255, 255));
+        cin.setFont(cin.getFont().deriveFont(cin.getFont().getSize()+3f));
+        cin.setText(" ");
+        cin.setBorder(null);
+        cin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cinActionPerformed(evt);
+            }
+        });
+        jPanel2.add(cin, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 160, 220, 40));
+
+        jLabel29.setForeground(new java.awt.Color(51, 51, 51));
+        jLabel29.setText("_________________________________________");
+        jPanel2.add(jLabel29, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 170, 210, 50));
+
+        jPanel9.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel9.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
+        jPanel9.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        srch.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
+        srch.setForeground(new java.awt.Color(204, 204, 204));
+        srch.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/gif/icons8-search.gif"))); // NOI18N
+        srch.setText("Search");
+        jPanel9.add(srch, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 0, 101, 40));
+
+        srchf.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
+        srchf.setBorder(null);
+        srchf.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        srchf.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                srchfMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                srchfMouseExited(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                srchfMouseReleased(evt);
+            }
+        });
+        srchf.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                srchfActionPerformed(evt);
+            }
+        });
+        srchf.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                srchfKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                srchfKeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                srchfKeyTyped(evt);
+            }
+        });
+        jPanel9.add(srchf, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 10, 220, 20));
+
+        jPanel2.add(jPanel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(900, 450, 270, 40));
+
+        jLabel9.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
+        jLabel9.setText("Room type:");
+        jPanel2.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 160, 92, 28));
+
+        jLabel18.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
+        jLabel18.setText("Room ID:");
+        jPanel2.add(jLabel18, new org.netbeans.lib.awtextra.AbsoluteConstraints(850, 100, 92, 28));
+
+        vd1.setBackground(new java.awt.Color(204, 255, 255));
+        vd1.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED, new java.awt.Color(51, 255, 255), null));
+        vd1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        vd1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                vd1MouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                vd1MouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                vd1MouseExited(evt);
+            }
+        });
+
+        jLabel16.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
+        jLabel16.setText("PAYMENT");
+
+        javax.swing.GroupLayout vd1Layout = new javax.swing.GroupLayout(vd1);
+        vd1.setLayout(vd1Layout);
+        vd1Layout.setHorizontalGroup(
+            vd1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(vd1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel16)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        vd1Layout.setVerticalGroup(
+            vd1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, vd1Layout.createSequentialGroup()
+                .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+
+        jPanel2.add(vd1, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 310, 90, 30));
+
+        p11.setBackground(new java.awt.Color(102, 102, 102));
+        p11.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        p11.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                p11MouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                p11MouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                p11MouseExited(evt);
+            }
+        });
+
+        jLabel30.setBackground(new java.awt.Color(0, 102, 153));
+        jLabel30.setFont(new java.awt.Font("Verdana", 1, 14)); // NOI18N
+        jLabel30.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel30.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel30.setText("CLEAR");
+
+        javax.swing.GroupLayout p11Layout = new javax.swing.GroupLayout(p11);
+        p11.setLayout(p11Layout);
+        p11Layout.setHorizontalGroup(
+            p11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(p11Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel30, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        p11Layout.setVerticalGroup(
+            p11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(p11Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel30, javax.swing.GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        jPanel2.add(p11, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 390, -1, 60));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 1290, Short.MAX_VALUE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 853, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 925, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
@@ -836,48 +1198,104 @@ public class manageRooms extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1MouseClicked
 
     private void p4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p4MouseClicked
-        dbconnect db = new dbconnect();
-        try{
-            ResultSet rs = db.getData("SELECT * FROM tbl_rooms");
-        
+            dbconnect db = new dbconnect();
+            Session sess = Session.getInstance();
             
             
-            
-            if(rs.next()){
-                   
-                
-                    if(db.insertData("INSERT INTO tbl_cost(Name,ContactNo,RoomType,RoomNo,Check_in,Check_out,c_balance, c_status)"
-                            + "VALUES('"+rt2.getText()+"','"+rt3.getText()+"', '"+txtrt.getSelectedItem()+"','"+txtrno.getSelectedItem()+"',"
-                                    + "CURRENT_TIMESTAMP,NULL,'"+rt5.getText()+"', 'Active')"))
-                    {
-                         db.updateData("UPDATE tbl_rooms SET r_status = 'Booked' WHERE roomNo = '"+txtrno.getSelectedItem()+"'",false);
-                         JOptionPane.showMessageDialog(null,"Checked In");
-                         DefaultTableModel model = (DefaultTableModel)cosTable.getModel();
-                         model.setRowCount(0);
-                         displayData(); 
-                         
-                        id.setText("");
-                        txtrt.setSelectedItem("");
-                        txtrno.setSelectedItem("");
-                        rt2.setText("");
-                        rt3.setText("");
-                        cout.setDate(null);
-                        
-                    }else{
-                        JOptionPane.showMessageDialog(null,"Invalid");
+            try {
+                    // Check if u_id exists in tbl_user before inserting into tbl_transaction
+                    String checkUserIdQuery = "SELECT * FROM tbl_user WHERE u_id = ?";
+                    PreparedStatement checkUserIdPst = db.connect.prepareStatement(checkUserIdQuery);
+                    checkUserIdPst.setString(1, String.valueOf(sess.getUid())); // Assuming sess.getUid() retrieves the user ID
+                    ResultSet userRs = checkUserIdPst.executeQuery();
+
+                    if (userRs.next()) {
+                        // u_id exists, proceed with transaction insertion
+                        // Your transaction insertion code here
+                    } else {
+                        // u_id does not exist in tbl_user, show error message or handle accordingly
+                        JOptionPane.showMessageDialog(null, "Invalid user ID.");
                     }
-                   
+
+                    userRs.close();
+                    checkUserIdPst.close();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Error processing transaction.");
                 }
-             
-                
-            
-            
-           
-        } catch (SQLException ex) {
-            Logger.getLogger(manageRooms.class.getName()).log(Level.SEVERE, null, ex);
-        }
+
+            try {
+                // Get the selected roomID from the room combo box
+                int roomID = Integer.parseInt(roomid.getText());
+
+                // Extract the numeric part from the total payment text field
+                String totalPaymentText = tprc.getText().replace("PHP ", ""); // Remove the "PHP " prefix
+                double totalPayment = Double.parseDouble(totalPaymentText);
+
+                // Get the current date in the required format
+                String checkInDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+                String checkOutDate = null;  // Initialize checkOutDate as null
+
+                    // Check if cout is not null and has a selected date
+                    if (cout.getDate() != null) {
+                        // Get the selected checkout date and format it
+                        checkOutDate = new SimpleDateFormat("yyyy-MM-dd").format(cout.getDate());
+                    }
+
+                // Insert data into tbl_transaction
+                String insertTransactionQuery = "INSERT INTO tbl_transaction (u_id, roomID, name, contact, check_in, check_out, totalPayment, status)" +
+                                                " VALUES (?, ?, ?, ?, ?, ?, ?, 'Active')";
+                PreparedStatement insertTransactionPst = db.connect.prepareStatement(insertTransactionQuery);
+                insertTransactionPst.setString(1, String.valueOf(sess.getUid())); // Assuming u_id is a string in the database
+                insertTransactionPst.setInt(2, roomID);
+                insertTransactionPst.setString(3, rt2.getText());
+                insertTransactionPst.setString(4, rt3.getText());
+                insertTransactionPst.setString(5, checkInDate);
+                insertTransactionPst.setString(6, checkOutDate);
+                insertTransactionPst.setDouble(7, totalPayment);
+
+                int rowsInserted = insertTransactionPst.executeUpdate();
+
+                if (rowsInserted > 0) {
+                    System.out.println("Transaction details inserted into tbl_transaction.");
+
+                    // Update r_status in tbl_room to 'Booked'
+                    String updateRoomQuery = "UPDATE tbl_room SET r_status = 'Booked' WHERE roomID = ?";
+                    PreparedStatement updateRoomPst = db.connect.prepareStatement(updateRoomQuery);
+                    updateRoomPst.setInt(1, roomID);
+
+                    int rowsUpdated = updateRoomPst.executeUpdate();
+
+                    if (rowsUpdated > 0) {
+                        System.out.println("Room status updated to 'Booked' in tbl_room.");
+                    } else {
+                        System.out.println("Failed to update room status in tbl_room.");
+                    }
+
+                    updateRoomPst.close();
+
+                    // Display success message and update GUI
+                    JOptionPane.showMessageDialog(null, "Checked In");
+                    DefaultTableModel model = (DefaultTableModel) cosTable.getModel();
+                    model.setRowCount(0);
+                    displayData();
+
+                   
+                    manageRooms mrm = new manageRooms();
+                    mrm.setVisible(true);
+                    this.dispose();
         
-        
+                    
+                } else {
+                    JOptionPane.showMessageDialog(null, "Failed to insert transaction details.");
+                }
+
+                insertTransactionPst.close();
+            } catch (SQLException | NumberFormatException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Error processing transaction.");
+            }
+
     }//GEN-LAST:event_p4MouseClicked
 
     private void p4MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p4MouseEntered
@@ -911,46 +1329,44 @@ public class manageRooms extends javax.swing.JFrame {
     }//GEN-LAST:event_vdMouseEntered
 
     private void vdMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_vdMouseClicked
-        dbconnect db = new dbconnect();
-        int row = cosTable.getSelectedRow();
+      dbconnect db = new dbconnect();
+int row = cosTable.getSelectedRow();
 
-        if(row < 0)
-        {
-            JOptionPane.showMessageDialog(null,"Please Select");
+if (row < 0) {
+    JOptionPane.showMessageDialog(null, "Please select a row.");
+} else {
+    TableModel mod = cosTable.getModel();
+    try {
+        // Get the transID from the selected row
+          int transID = Integer.parseInt(mod.getValueAt(row, 0).toString()); // Assuming transID is in column 0
+
+        // Fetch the transaction details based on transID
+        ResultSet rs = db.getData("SELECT * FROM tbl_transaction WHERE transID = '" + transID + "'");
+
+        if (rs.next()) {
+            int roomId = rs.getInt("roomID");
+            int confirmation = JOptionPane.showConfirmDialog(null, "Are you sure you want to void the transaction?", "Confirm", JOptionPane.YES_NO_OPTION);
+
+            if (confirmation == JOptionPane.YES_OPTION) {
+                // Delete the row from tbl_transaction based on transID
+                db.delete(transID, "tbl_transaction", "transID", false);
+
+                // Update room status to 'Active'
+                db.updateData("UPDATE tbl_room SET r_status = 'Active' WHERE roomID = " + roomId, false);
+
+                // Refresh the table data
+                DefaultTableModel model = (DefaultTableModel) cosTable.getModel();
+                model.setRowCount(0); // Clear existing rows
+                displayData(); // Reload data
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Transaction details not found.");
         }
-        else
-        {
-            TableModel mod = cosTable.getModel();
-           try{
-
-           ResultSet rs = db.getData("SELECT * FROM tbl_cost WHERE roomNo = '"+mod.getValueAt(row, 3)+"'");
-
-           if(rs.next()){
-               ResultSet up = db.getData("SELECT * FROM tbl_rooms WHERE roomNo = '"+mod.getValueAt(row, 3)+"'");
-               Object val = rs.getString("id");
-               String id = val.toString();
-
-               int l = JOptionPane.showConfirmDialog(null, "Are you Sure you want to Check Out?", "Select", JOptionPane.YES_NO_OPTION);
-
-               if(l == 0){
-                   int s_id = Integer.parseInt(id);
-                   db.delete(s_id,"tbl_cost","id",false);
-                   if(up.next()){
-                       db.updateData("UPDATE tbl_rooms SET r_status = 'Archived' WHERE roomNo = '"+mod.getValueAt(row, 3)+"'",false);
-                       
-                   }
-               }
-               DefaultTableModel model = (DefaultTableModel)cosTable.getModel();
-               model.setRowCount(0);
-               displayData(); 
-            
-        }
-        
-        } catch (SQLException ex) 
-        {
-             Logger.getLogger(manageRooms.class.getName()).log(Level.SEVERE, null, ex);
-         }
-       }
+    } catch (SQLException ex) {
+        Logger.getLogger(manageRooms.class.getName()).log(Level.SEVERE, null, ex);
+        JOptionPane.showMessageDialog(null, "Error processing request.");
+    }
+}
     }//GEN-LAST:event_vdMouseClicked
 
     private void rt2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rt2ActionPerformed
@@ -961,25 +1377,6 @@ public class manageRooms extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_rt3ActionPerformed
 
-    private void p9MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p9MouseClicked
-                    id.setText("");
-                    txtrt.setSelectedItem("");
-                    txtrno.setSelectedItem("");
-                    rt2.setText("");
-                    rt3.setText("");
-                    
-                    
-           
-    }//GEN-LAST:event_p9MouseClicked
-
-    private void p9MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p9MouseEntered
-        p9.setBackground(new Color(204,204,204));
-    }//GEN-LAST:event_p9MouseEntered
-
-    private void p9MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p9MouseExited
-        p9.setBackground(new Color(102,102,102));
-    }//GEN-LAST:event_p9MouseExited
-
     private void jLabel13AncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_jLabel13AncestorAdded
         // TODO add your handling code here:
     }//GEN-LAST:event_jLabel13AncestorAdded
@@ -988,17 +1385,24 @@ public class manageRooms extends javax.swing.JFrame {
         dbconnect db = new dbconnect();
         String rts = txtrt.getSelectedItem().toString();
         txtrno.removeAllItems();
-        try{
-            ResultSet res = db.getData("SELECT * FROM tbl_rooms WHERE roomType ='"+rts+"' AND r_status = 'Active' ");
-            
-            while(res.next()){
-                
-                txtrno.addItem(res.getString("roomNo"));
-                rt5.setText(res.getString("price"));
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(manageRooms.class.getName()).log(Level.SEVERE, null, ex);
-        } 
+
+    try {
+        String query = "SELECT roomNo, r_price FROM tbl_room WHERE roomType = ? AND r_status = 'Active'";
+        PreparedStatement pst = db.connect.prepareStatement(query);
+        pst.setString(1, rts);
+        ResultSet res = pst.executeQuery();
+
+        while (res.next()) {
+            txtrno.addItem(res.getString("roomNo"));
+            rt5.setText(res.getString("r_price"));
+        }
+
+        
+    } catch (SQLException ex) {
+        Logger.getLogger(manageRooms.class.getName()).log(Level.SEVERE, null, ex);
+    }
+
+
         
     }//GEN-LAST:event_txtrtActionPerformed
 
@@ -1007,40 +1411,69 @@ public class manageRooms extends javax.swing.JFrame {
     }//GEN-LAST:event_rt5ActionPerformed
 
     private void p10MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p10MouseClicked
-       dbconnect db = new dbconnect();
+        dbconnect db = new dbconnect();
         int row = cosTable.getSelectedRow();
 
-        if(row < 0)
-        {
-            JOptionPane.showMessageDialog(null,"Please Select");
+        if (row < 0) {
+            JOptionPane.showMessageDialog(null, "Please select a row.");
+        } else {
+            TableModel model = cosTable.getModel();
+            if (model != null) {
+                try {
+                    String u_id = model.getValueAt(row, 2).toString(); // Assuming column index 2 contains u_id
+
+                    if (u_id != null && !u_id.isEmpty()) { // Check if u_id is not null or empty
+                        String sql = "SELECT t.transID, t.roomID, t.u_id, t.name, t.Contact, r.roomType, r.roomNo, t.check_in, t.check_out, t.totalpayment, t.status " +
+                                     "FROM tbl_transaction t " +
+                                     "JOIN tbl_room r ON t.roomID = r.roomID " +
+                                     "WHERE t.u_id = ?"; // Use parameterized query to avoid SQL injection
+
+                        PreparedStatement pst = db.connect.prepareStatement(sql);
+                        pst.setString(1, u_id);
+                        ResultSet rs = pst.executeQuery();
+
+                        if (rs != null && rs.next()) {
+                            id.setText(String.valueOf(rs.getInt("transID")));
+                            rt2.setText(rs.getString("name")); 
+                            rt3.setText(rs.getString("contact"));
+                            txtrt.setSelectedItem(rs.getString("roomType"));
+                            txtrno.setSelectedItem(rs.getString("roomNo"));
+
+                            // Assuming 'check_in' and 'check_out' are of type java.sql.Date or java.util.Date
+                            Date checkInDate = rs.getDate("check_in");
+                            Date checkOutDate = rs.getDate("check_out");
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
+                            if (checkInDate != null) {
+                                cin.setText(dateFormat.format(checkInDate));
+                            }
+                            if (checkOutDate != null) {
+                                cout.setDate(checkOutDate);
+                            }
+
+                            // Assuming 'totalpayment' is of type double
+                            double totalPayment = rs.getDouble("totalpayment");
+                            tprc.setText(String.format("PHP %.2f", totalPayment));
+
+                            // Assuming 'status' is a String field
+                            // Set any other fields you need here
+
+                        } else {
+                            JOptionPane.showMessageDialog(null, "No data found for the selected user ID.");
+                        }
+
+                        rs.close();
+                        pst.close();
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Invalid user ID.");
+                    }
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Error retrieving data from the database.");
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Table model is null.");
+            }
         }
-        else
-        {
-            TableModel mod = cosTable.getModel();
-           try{
-
-           ResultSet rs = db.getData("SELECT * FROM tbl_cost WHERE roomNo = '"+mod.getValueAt(row, 3)+"'");
-
-           if(rs.next()){
-               
-                id.setText(""+rs.getInt("id"));
-                rt2.setText(""+rs.getString("Name"));
-                rt3.setText(""+rs.getString("contactNo"));
-                txtrt.setSelectedItem(""+rs.getString("roomType"));
-                txtrno.setSelectedItem(""+rs.getInt("roomNo"));
-          
-               
-               
-               
-               
-               
-               }
-        
-        } catch (SQLException ex) 
-        {
-             Logger.getLogger(manageRooms.class.getName()).log(Level.SEVERE, null, ex);
-         }
-       }
     }//GEN-LAST:event_p10MouseClicked
 
     private void p10MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p10MouseEntered
@@ -1051,13 +1484,186 @@ public class manageRooms extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_p10MouseExited
 
-    private void rt6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rt6ActionPerformed
+    private void tprcActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tprcActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_rt6ActionPerformed
+    }//GEN-LAST:event_tprcActionPerformed
 
     private void idActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_idActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_idActionPerformed
+
+    private void cinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cinActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cinActionPerformed
+
+    private void srchfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_srchfActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_srchfActionPerformed
+
+    private void srchfMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_srchfMouseEntered
+    
+    }//GEN-LAST:event_srchfMouseEntered
+
+    private void srchfMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_srchfMouseExited
+    
+    }//GEN-LAST:event_srchfMouseExited
+
+    private void srchfMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_srchfMouseReleased
+      srch.setText("Search");
+    }//GEN-LAST:event_srchfMouseReleased
+
+    private void srchfKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_srchfKeyPressed
+       
+    }//GEN-LAST:event_srchfKeyPressed
+
+    private void srchfKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_srchfKeyTyped
+        srch.setText("");
+    }//GEN-LAST:event_srchfKeyTyped
+
+    private void srchfKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_srchfKeyReleased
+        
+    }//GEN-LAST:event_srchfKeyReleased
+
+    private void coutComponentAdded(java.awt.event.ContainerEvent evt) {//GEN-FIRST:event_coutComponentAdded
+            
+        
+        String roomType = txtrt.getSelectedItem().toString();
+        String roomNumber = txtrno.getSelectedItem().toString();
+        Date checkInDate = new Date();
+        Date checkOutDate = null;
+
+        try 
+        {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+            checkOutDate = cout.getDate();
+            
+        } catch (Exception ex) 
+        {
+            ex.printStackTrace();
+        }
+
+
+        if (!roomType.isEmpty() && !roomNumber.isEmpty() && checkOutDate != null) 
+        {
+
+            if (checkOutDate.after(checkInDate)) 
+            {
+
+                calculateTotalPayment();
+            } 
+            else 
+            {
+
+                tprc.setText("Check-out date must be after check-in date");
+
+                cout.setDate(null);
+            }
+        } 
+        else 
+        {
+
+            if (roomType.isEmpty()) 
+            {
+
+                tprc.setText("Please select a room type");
+            } else if (roomNumber.isEmpty()) 
+            {
+
+                tprc.setText("Please select a room number");
+            } else if (checkOutDate == null) 
+            {
+
+                tprc.setText("Please select a check-out date");
+            }
+        }
+
+
+       
+    }//GEN-LAST:event_coutComponentAdded
+
+    private void txtrnoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtrnoActionPerformed
+            
+     String selectedRoomNo = txtrno.getSelectedItem().toString(); // Get the selected room number
+
+        if (!selectedRoomNo.isEmpty()) {
+            dbconnect db = new dbconnect();
+
+            // Check if the database connection is valid
+            if (db.connect != null) {
+                String query = "SELECT roomID FROM tbl_room WHERE roomNo = ?";
+                try {
+                    PreparedStatement pst = db.connect.prepareStatement(query);
+                    pst.setString(1, selectedRoomNo);
+                    ResultSet rs = pst.executeQuery();
+
+                    if (rs.next()) {
+                        int roomID = rs.getInt("roomID");
+                        roomid.setText(String.valueOf(roomID)); // Set roomID in roomid text field
+                    } else {
+                        roomid.setText("Room ID not found");
+                    }
+
+                    rs.close();
+                    pst.close();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                    roomid.setText("Error fetching room ID");
+                }
+            } else {
+                roomid.setText("Database connection error");
+            }
+        } else {
+            roomid.setText("Please select a room number");
+        }
+    
+    }//GEN-LAST:event_txtrnoActionPerformed
+
+    private void coutKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_coutKeyTyped
+        // TODO add your handling code here:
+    }//GEN-LAST:event_coutKeyTyped
+
+    private void coutMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_coutMouseClicked
+        
+    }//GEN-LAST:event_coutMouseClicked
+
+    private void vd1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_vd1MouseClicked
+       if (cout.getDate() == null || txtrno.getSelectedItem() == null) {
+            // Set text to prompt user to select date or room number
+            tprc.setText(rt5.getText());
+        } else {
+            // Calculate and set total payment if both date and room number are selected
+            double totalPayment = calculateTotalPayment();
+            tprc.setText(String.format("PHP %.2f", totalPayment));
+            txtrt.setEnabled(false);
+        }
+       
+     
+    }//GEN-LAST:event_vd1MouseClicked
+
+    private void vd1MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_vd1MouseEntered
+        vd1.setBackground(new Color(51,255,255));
+    }//GEN-LAST:event_vd1MouseEntered
+
+    private void vd1MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_vd1MouseExited
+       vd1.setBackground(new Color(204,255,255));
+    }//GEN-LAST:event_vd1MouseExited
+
+    private void p11MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p11MouseClicked
+        manageRooms mrm = new manageRooms();
+        mrm.setVisible(true);
+        this.dispose();
+        
+       
+    }//GEN-LAST:event_p11MouseClicked
+
+    private void p11MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p11MouseEntered
+        // TODO add your handling code here:
+    }//GEN-LAST:event_p11MouseEntered
+
+    private void p11MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p11MouseExited
+        // TODO add your handling code here:
+    }//GEN-LAST:event_p11MouseExited
 
     /**
      * @param args the command line arguments
@@ -1096,6 +1702,7 @@ public class manageRooms extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField cin;
     private javax.swing.JTable cosTable;
     private com.toedter.calendar.JDateChooser cout;
     private javax.swing.JTextField id;
@@ -1109,22 +1716,25 @@ public class manageRooms extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
-    private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel25;
     private javax.swing.JLabel jLabel26;
     private javax.swing.JLabel jLabel27;
     private javax.swing.JLabel jLabel28;
+    private javax.swing.JLabel jLabel29;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel30;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -1133,23 +1743,28 @@ public class manageRooms extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
+    private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JPanel p10;
+    private javax.swing.JPanel p11;
     private javax.swing.JPanel p4;
     private javax.swing.JPanel p5;
-    private javax.swing.JPanel p9;
     public javax.swing.JTextField pw;
+    private javax.swing.JLabel roomid;
     private javax.swing.JTextField rt2;
     private javax.swing.JTextField rt3;
     private javax.swing.JTextField rt5;
-    private javax.swing.JTextField rt6;
+    private javax.swing.JLabel srch;
+    private javax.swing.JTextField srchf;
     private javax.swing.JTable tableRoom;
+    private javax.swing.JTextField tprc;
     private javax.swing.JLabel txtdate;
     private javax.swing.JComboBox<String> txtrno;
     private javax.swing.JComboBox<String> txtrt;
     private javax.swing.JLabel txttime;
     private javax.swing.JPanel vd;
+    private javax.swing.JPanel vd1;
     // End of variables declaration//GEN-END:variables
 }

@@ -134,8 +134,6 @@ public class userDash extends javax.swing.JFrame {
         jLabel13 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
-        p1 = new javax.swing.JPanel();
-        jLabel9 = new javax.swing.JLabel();
         p2 = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
         p4 = new javax.swing.JPanel();
@@ -144,6 +142,8 @@ public class userDash extends javax.swing.JFrame {
         jLabel15 = new javax.swing.JLabel();
         p3 = new javax.swing.JPanel();
         jLabel11 = new javax.swing.JLabel();
+        p1 = new javax.swing.JPanel();
+        jLabel9 = new javax.swing.JLabel();
         jPanel8 = new javax.swing.JPanel();
         jLabel17 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
@@ -226,7 +226,7 @@ public class userDash extends javax.swing.JFrame {
 
         jPanel3.add(p5, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 280, 180, 40));
 
-        jPanel1.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 220, 430));
+        jPanel1.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 220, 630));
 
         table.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED, new java.awt.Color(102, 102, 102), new java.awt.Color(51, 51, 51), new java.awt.Color(0, 0, 0), new java.awt.Color(102, 102, 102)));
         table.setModel(new javax.swing.table.DefaultTableModel(
@@ -239,46 +239,7 @@ public class userDash extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(table);
 
-        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 60, 693, 290));
-
-        p1.setBackground(new java.awt.Color(51, 0, 0));
-        p1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        p1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                p1MouseClicked(evt);
-            }
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                p1MouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                p1MouseExited(evt);
-            }
-        });
-
-        jLabel9.setBackground(new java.awt.Color(0, 102, 153));
-        jLabel9.setFont(new java.awt.Font("Segoe UI", 1, 15)); // NOI18N
-        jLabel9.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel9.setText("ADD USER");
-
-        javax.swing.GroupLayout p1Layout = new javax.swing.GroupLayout(p1);
-        p1.setLayout(p1Layout);
-        p1Layout.setHorizontalGroup(
-            p1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(p1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel9)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        p1Layout.setVerticalGroup(
-            p1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, p1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        jPanel1.add(p1, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 10, -1, -1));
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 50, 693, 370));
 
         p2.setBackground(new java.awt.Color(51, 0, 0));
         p2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -306,8 +267,8 @@ public class userDash extends javax.swing.JFrame {
             p2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(p2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel10)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, 70, Short.MAX_VALUE)
+                .addContainerGap())
         );
         p2Layout.setVerticalGroup(
             p2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -317,7 +278,7 @@ public class userDash extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel1.add(p2, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 10, -1, -1));
+        jPanel1.add(p2, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 140, 90, -1));
 
         p4.setBackground(new java.awt.Color(51, 0, 0));
         p4.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -345,8 +306,8 @@ public class userDash extends javax.swing.JFrame {
             p4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(p4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel12)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jLabel12, javax.swing.GroupLayout.DEFAULT_SIZE, 70, Short.MAX_VALUE)
+                .addContainerGap())
         );
         p4Layout.setVerticalGroup(
             p4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -356,7 +317,7 @@ public class userDash extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel1.add(p4, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 10, -1, -1));
+        jPanel1.add(p4, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 80, 90, -1));
 
         p6.setBackground(new java.awt.Color(102, 102, 102));
         p6.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -395,7 +356,7 @@ public class userDash extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jPanel1.add(p6, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 360, 690, -1));
+        jPanel1.add(p6, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 450, 690, -1));
 
         p3.setBackground(new java.awt.Color(51, 0, 0));
         p3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -423,8 +384,8 @@ public class userDash extends javax.swing.JFrame {
             p3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(p3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel11)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, 70, Short.MAX_VALUE)
+                .addContainerGap())
         );
         p3Layout.setVerticalGroup(
             p3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -434,7 +395,46 @@ public class userDash extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jPanel1.add(p3, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 10, -1, -1));
+        jPanel1.add(p3, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 260, 90, -1));
+
+        p1.setBackground(new java.awt.Color(51, 0, 0));
+        p1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        p1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                p1MouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                p1MouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                p1MouseExited(evt);
+            }
+        });
+
+        jLabel9.setBackground(new java.awt.Color(0, 102, 153));
+        jLabel9.setFont(new java.awt.Font("Segoe UI", 1, 15)); // NOI18N
+        jLabel9.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel9.setText("ADD USER");
+
+        javax.swing.GroupLayout p1Layout = new javax.swing.GroupLayout(p1);
+        p1.setLayout(p1Layout);
+        p1Layout.setHorizontalGroup(
+            p1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(p1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        p1Layout.setVerticalGroup(
+            p1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, p1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        jPanel1.add(p1, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 200, 90, -1));
 
         jPanel8.setBackground(new java.awt.Color(0, 51, 51));
         jPanel8.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -453,13 +453,13 @@ public class userDash extends javax.swing.JFrame {
                 jLabel4MouseClicked(evt);
             }
         });
-        jPanel8.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(880, 0, 60, 60));
+        jPanel8.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(1010, 0, 60, 60));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 944, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 1077, Short.MAX_VALUE)
             .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
@@ -467,7 +467,7 @@ public class userDash extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 600, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0))
         );
 

@@ -6,14 +6,18 @@
 package Rooms;
 
 import admin.adminDash;
+import configgg.Session;
 import configgg.dbconnect;
 import java.awt.Color;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Blob;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -25,10 +29,14 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.RowFilter;
 import javax.swing.Timer;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 import net.proteanit.sql.DbUtils;
 import register.userForm;
 
@@ -89,7 +97,8 @@ public class checkOut extends javax.swing.JFrame {
      public void displayData(){
         try{
             dbconnect dbc = new dbconnect();
-            ResultSet rs = dbc.getData("SELECT Name, ContactNo, RoomType, RoomNo, Check_In, Check_Out, c_balance FROM tbl_cost");
+            ResultSet rs = dbc.getData("SELECT t.transID, t.roomID, t.u_id, t.name, t.Contact, r.roomType, r.roomNo, t.Check_In, t.Check_Out, t.status "
+                    + "\n FROM tbl_transaction t\n JOIN tbl_room r ON t.roomID = r.roomID;");;
             cosTable.setModel(DbUtils.resultSetToTableModel(rs));
              rs.close();
         }catch(SQLException ex){
@@ -97,6 +106,103 @@ public class checkOut extends javax.swing.JFrame {
         
         }
      }
+     
+     
+     public static int getHeightFromWidth(String imagePath, int desiredWidth) {
+        try {
+            // Read the image file
+            File imageFile = new File(imagePath);
+            BufferedImage image = ImageIO.read(imageFile);
+            
+            // Get the original width and height of the image
+            int originalWidth = image.getWidth();
+            int originalHeight = image.getHeight();
+            
+            // Calculate the new height based on the desired width and the aspect ratio
+            int newHeight = (int) ((double) desiredWidth / originalWidth * originalHeight);
+            
+            return newHeight;
+        } catch (IOException ex) {
+            System.out.println("No image found!");
+        }
+        
+        return -1;
+    }
+
+    
+    public  ImageIcon ResizeImage(String ImagePath, byte[] pic, JLabel label) {
+        ImageIcon MyImage = null;
+            if(ImagePath !=null){
+                MyImage = new ImageIcon(ImagePath);
+            }else{
+                MyImage = new ImageIcon(pic);
+            }
+
+        int newHeight = getHeightFromWidth(ImagePath, label.getWidth());
+
+        Image img = MyImage.getImage();
+        Image newImg = img.getScaledInstance(label.getWidth(), newHeight, Image.SCALE_SMOOTH);
+        ImageIcon image = new ImageIcon(newImg);
+        return image;
+    }
+    
+    
+            private void filterTable(String searchText, JTable table) 
+            {
+                TableRowSorter<TableModel> sorter = new TableRowSorter<>(table.getModel());
+                table.setRowSorter(sorter);
+
+                if (searchText.trim().length() == 0) {
+                    sorter.setRowFilter(null);
+                } else {
+                    sorter.setRowFilter(RowFilter.regexFilter("(?i)" + searchText));
+                }
+
+                applyHighlightRenderer(searchText, table);
+            }   
+
+           private void applyHighlightRenderer(String searchText, JTable table) 
+           {
+                for (int i = 0; i < table.getColumnCount(); i++) 
+                {
+                    table.getColumnModel().getColumn(i).setCellRenderer(new HighlightRenderer(searchText));
+                }
+            }
+
+            class HighlightRenderer extends DefaultTableCellRenderer 
+            {
+                private String searchText;
+
+                public HighlightRenderer(String searchText) 
+                {
+                    this.searchText = searchText;
+                }
+
+                @Override
+                protected void setValue(Object value) {
+                    if (value != null && searchText != null && !searchText.isEmpty()) 
+                    {
+                        String stringValue = value.toString();
+                        String lcSearchText = searchText.toLowerCase();
+                        String lcStringValue = stringValue.toLowerCase();
+
+                        int startIdx = lcStringValue.indexOf(lcSearchText);
+                        if (startIdx >= 0) 
+                        {
+                            String highlightedText = "<html>" + stringValue.substring(0, startIdx) +
+                                    "<span style='background: yellow;'>" +
+                                    stringValue.substring(startIdx, startIdx + searchText.length()) +
+                                    "</span>" + stringValue.substring(startIdx + searchText.length()) + "</html>";
+                            super.setValue(highlightedText);
+                            return;
+                        }
+                    }
+                    super.setValue(value);
+                }
+            }
+            
+     
+     
         
     
     
@@ -145,9 +251,7 @@ public class checkOut extends javax.swing.JFrame {
         cosTable = new javax.swing.JTable();
         p5 = new javax.swing.JPanel();
         jLabel15 = new javax.swing.JLabel();
-        cnm1 = new javax.swing.JTextField();
         jLabel24 = new javax.swing.JLabel();
-        cno1 = new javax.swing.JTextField();
         jLabel26 = new javax.swing.JLabel();
         rtp = new javax.swing.JTextField();
         jLabel29 = new javax.swing.JLabel();
@@ -159,16 +263,31 @@ public class checkOut extends javax.swing.JFrame {
         jLabel31 = new javax.swing.JLabel();
         cko = new javax.swing.JTextField();
         jLabel32 = new javax.swing.JLabel();
-        jPanel3 = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
-        jButton2 = new javax.swing.JButton();
         jLabel17 = new javax.swing.JLabel();
-        id = new javax.swing.JTextField();
+        tid = new javax.swing.JTextField();
         jLabel33 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
-        txttime = new javax.swing.JLabel();
+        jPanel4 = new javax.swing.JPanel();
+        jPanel5 = new javax.swing.JPanel();
+        cname = new javax.swing.JLabel();
+        cimg = new javax.swing.JLabel();
+        cid = new javax.swing.JLabel();
+        jLabel28 = new javax.swing.JLabel();
+        rid = new javax.swing.JTextField();
+        jLabel34 = new javax.swing.JLabel();
+        jLabel35 = new javax.swing.JLabel();
+        rp = new javax.swing.JTextField();
+        jLabel36 = new javax.swing.JLabel();
         jLabel25 = new javax.swing.JLabel();
         txtdate = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        txttime = new javax.swing.JLabel();
+        jLabel37 = new javax.swing.JLabel();
+        tuid = new javax.swing.JTextField();
+        jLabel18 = new javax.swing.JLabel();
+        jLabel38 = new javax.swing.JLabel();
+        jLabel39 = new javax.swing.JLabel();
+        tnm = new javax.swing.JTextField();
+        jLabel40 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -177,15 +296,20 @@ public class checkOut extends javax.swing.JFrame {
             }
         });
 
-        jPanel2.setBackground(new java.awt.Color(204, 255, 255));
+        jPanel2.setBackground(new java.awt.Color(51, 51, 51));
+        jPanel2.setForeground(new java.awt.Color(255, 255, 255));
+        jPanel2.setMinimumSize(new java.awt.Dimension(1366, 768));
+        jPanel2.setPreferredSize(new java.awt.Dimension(1366, 768));
         jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel1.setBackground(new java.awt.Color(153, 0, 0));
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel1.setFont(new java.awt.Font("Copperplate Gothic Bold", 1, 36)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(204, 204, 204));
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Check-Out");
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 10, 1120, -1));
 
         jButton1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jButton1.setText("BACK");
@@ -195,29 +319,9 @@ public class checkOut extends javax.swing.JFrame {
                 jButton1MouseClicked(evt);
             }
         });
+        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1250, 10, 73, 41));
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 1076, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(131, 131, 131))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-
-        jPanel2.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1300, -1));
+        jPanel2.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1370, 70));
 
         p3.setBackground(new java.awt.Color(102, 0, 0));
         p3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -245,7 +349,7 @@ public class checkOut extends javax.swing.JFrame {
             p3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(p3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+                .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, 240, Short.MAX_VALUE)
                 .addContainerGap())
         );
         p3Layout.setVerticalGroup(
@@ -256,7 +360,7 @@ public class checkOut extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jPanel2.add(p3, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 530, 320, 50));
+        jPanel2.add(p3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 590, 260, 50));
 
         p4.setBackground(new java.awt.Color(0, 153, 0));
         p4.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -304,72 +408,81 @@ public class checkOut extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jPanel2.add(p4, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 600, 320, 50));
+        jPanel2.add(p4, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 660, 260, 50));
 
         jLabel10.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
-        jLabel10.setText("RoomType:");
-        jPanel2.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(810, 110, 92, 28));
+        jLabel10.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel10.setText("Room Type:");
+        jPanel2.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 270, 100, 20));
 
         pw.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jPanel2.add(pw, new org.netbeans.lib.awtextra.AbsoluteConstraints(-20, 90, -1, -1));
 
         jLabel6.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
+        jLabel6.setForeground(new java.awt.Color(255, 255, 255));
         jLabel6.setText("Name:");
-        jPanel2.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 150, 92, 40));
+        jPanel2.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 260, 92, 30));
 
         jLabel5.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
+        jLabel5.setForeground(new java.awt.Color(255, 255, 255));
         jLabel5.setText("Room No.:");
-        jPanel2.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(810, 160, 110, 28));
+        jPanel2.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 300, 110, 20));
 
         jLabel3.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
         jLabel3.setText("Contact No.:");
-        jPanel2.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 210, 100, 30));
+        jPanel2.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 300, 100, 30));
 
-        jLabel14.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
+        jLabel14.setFont(new java.awt.Font("Verdana", 0, 18)); // NOI18N
+        jLabel14.setForeground(new java.awt.Color(255, 255, 255));
         jLabel14.setText("Total Price:");
-        jPanel2.add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(810, 230, -1, -1));
+        jPanel2.add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 370, -1, 30));
 
-        cnm.setBackground(new java.awt.Color(204, 255, 255));
-        cnm.setFont(cnm.getFont().deriveFont(cnm.getFont().getSize()+3f));
+        cnm.setBackground(new java.awt.Color(51, 51, 51));
+        cnm.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        cnm.setForeground(new java.awt.Color(255, 255, 255));
         cnm.setBorder(null);
         cnm.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cnmActionPerformed(evt);
             }
         });
-        jPanel2.add(cnm, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 140, 240, 40));
+        jPanel2.add(cnm, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 260, 250, 30));
 
-        jLabel19.setForeground(new java.awt.Color(51, 51, 51));
-        jLabel19.setText("_________________________________________");
-        jPanel2.add(jLabel19, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 150, 250, 50));
+        jLabel19.setForeground(new java.awt.Color(51, 204, 255));
+        jLabel19.setText("______________________________________________");
+        jPanel2.add(jLabel19, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 270, 300, 30));
 
-        cno.setBackground(new java.awt.Color(204, 255, 255));
-        cno.setFont(cno.getFont().deriveFont(cno.getFont().getSize()+3f));
+        cno.setBackground(new java.awt.Color(51, 51, 51));
+        cno.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        cno.setForeground(new java.awt.Color(255, 255, 255));
         cno.setBorder(null);
         cno.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cnoActionPerformed(evt);
             }
         });
-        jPanel2.add(cno, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 190, 240, 40));
+        jPanel2.add(cno, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 300, 250, 30));
 
-        jLabel20.setForeground(new java.awt.Color(51, 51, 51));
-        jLabel20.setText("_________________________________________");
-        jPanel2.add(jLabel20, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 200, 250, 50));
+        jLabel20.setForeground(new java.awt.Color(51, 204, 255));
+        jLabel20.setText("_______________________________________________");
+        jPanel2.add(jLabel20, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 310, 300, 30));
 
-        tprc.setBackground(new java.awt.Color(204, 255, 255));
-        tprc.setFont(tprc.getFont().deriveFont(tprc.getFont().getSize()+3f));
+        tprc.setBackground(new java.awt.Color(51, 51, 51));
+        tprc.setFont(new java.awt.Font("Verdana", 0, 18)); // NOI18N
+        tprc.setForeground(new java.awt.Color(255, 255, 255));
+        tprc.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         tprc.setBorder(null);
         tprc.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 tprcActionPerformed(evt);
             }
         });
-        jPanel2.add(tprc, new org.netbeans.lib.awtextra.AbsoluteConstraints(910, 220, 240, 30));
+        jPanel2.add(tprc, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 370, 280, 40));
 
-        jLabel21.setForeground(new java.awt.Color(51, 51, 51));
-        jLabel21.setText("_________________________________________");
-        jPanel2.add(jLabel21, new org.netbeans.lib.awtextra.AbsoluteConstraints(910, 230, 250, 40));
+        jLabel21.setForeground(new java.awt.Color(51, 204, 255));
+        jLabel21.setText("______________________________________________");
+        jPanel2.add(jLabel21, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 390, 290, 40));
 
         p9.setBackground(new java.awt.Color(102, 102, 102));
         p9.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -397,7 +510,7 @@ public class checkOut extends javax.swing.JFrame {
             p9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(p9Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel22, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+                .addComponent(jLabel22, javax.swing.GroupLayout.DEFAULT_SIZE, 240, Short.MAX_VALUE)
                 .addContainerGap())
         );
         p9Layout.setVerticalGroup(
@@ -405,7 +518,7 @@ public class checkOut extends javax.swing.JFrame {
             .addComponent(jLabel22, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)
         );
 
-        jPanel2.add(p9, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 460, 320, 50));
+        jPanel2.add(p9, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 520, 260, 50));
 
         p10.setBackground(new java.awt.Color(102, 102, 102));
         p10.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -433,7 +546,7 @@ public class checkOut extends javax.swing.JFrame {
             p10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(p10Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel23, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+                .addComponent(jLabel23, javax.swing.GroupLayout.DEFAULT_SIZE, 240, Short.MAX_VALUE)
                 .addContainerGap())
         );
         p10Layout.setVerticalGroup(
@@ -441,29 +554,31 @@ public class checkOut extends javax.swing.JFrame {
             .addComponent(jLabel23, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)
         );
 
-        jPanel2.add(p10, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 390, 320, 50));
+        jPanel2.add(p10, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 450, 260, 50));
 
         jLabel7.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
+        jLabel7.setForeground(new java.awt.Color(255, 255, 255));
         jLabel7.setText("No. of Days:");
-        jPanel2.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 240, 100, -1));
+        jPanel2.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 210, 100, 20));
 
-        nod.setBackground(new java.awt.Color(204, 255, 255));
+        nod.setBackground(new java.awt.Color(51, 51, 51));
         nod.setFont(nod.getFont().deriveFont(nod.getFont().getSize()+3f));
+        nod.setForeground(new java.awt.Color(255, 255, 255));
         nod.setBorder(null);
         nod.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 nodActionPerformed(evt);
             }
         });
-        jPanel2.add(nod, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 230, 240, 30));
+        jPanel2.add(nod, new org.netbeans.lib.awtextra.AbsoluteConstraints(960, 210, 270, 20));
 
-        jLabel27.setForeground(new java.awt.Color(51, 51, 51));
-        jLabel27.setText("_________________________________________");
-        jPanel2.add(jLabel27, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 240, 250, 40));
+        jLabel27.setForeground(new java.awt.Color(51, 204, 255));
+        jLabel27.setText("_______________________________________________");
+        jPanel2.add(jLabel27, new org.netbeans.lib.awtextra.AbsoluteConstraints(950, 210, 290, 30));
 
         jScrollPane1.setViewportView(cosTable);
 
-        jPanel2.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 320, 760, 340));
+        jPanel2.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 460, 950, 250));
 
         p5.setBackground(new java.awt.Color(102, 102, 102));
         p5.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -502,186 +617,259 @@ public class checkOut extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jPanel2.add(p5, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 320, 320, 50));
-
-        cnm1.setBackground(new java.awt.Color(204, 255, 255));
-        cnm1.setFont(cnm1.getFont().deriveFont(cnm1.getFont().getSize()+3f));
-        cnm1.setBorder(null);
-        cnm1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cnm1ActionPerformed(evt);
-            }
-        });
-        jPanel2.add(cnm1, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 140, 240, 40));
+        jPanel2.add(p5, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 380, 260, 50));
 
         jLabel24.setForeground(new java.awt.Color(51, 51, 51));
         jLabel24.setText("_________________________________________");
-        jPanel2.add(jLabel24, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 150, 250, 50));
-
-        cno1.setBackground(new java.awt.Color(204, 255, 255));
-        cno1.setFont(cno1.getFont().deriveFont(cno1.getFont().getSize()+3f));
-        cno1.setBorder(null);
-        cno1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cno1ActionPerformed(evt);
-            }
-        });
-        jPanel2.add(cno1, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 190, 240, 40));
+        jPanel2.add(jLabel24, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 310, 280, 40));
 
         jLabel26.setForeground(new java.awt.Color(51, 51, 51));
         jLabel26.setText("_________________________________________");
-        jPanel2.add(jLabel26, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 200, 250, 50));
+        jPanel2.add(jLabel26, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 410, 290, 30));
 
-        rtp.setBackground(new java.awt.Color(204, 255, 255));
+        rtp.setBackground(new java.awt.Color(51, 51, 51));
         rtp.setFont(rtp.getFont().deriveFont(rtp.getFont().getSize()+3f));
+        rtp.setForeground(new java.awt.Color(255, 255, 255));
         rtp.setBorder(null);
         rtp.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 rtpActionPerformed(evt);
             }
         });
-        jPanel2.add(rtp, new org.netbeans.lib.awtextra.AbsoluteConstraints(910, 90, 240, 40));
+        jPanel2.add(rtp, new org.netbeans.lib.awtextra.AbsoluteConstraints(960, 270, 270, 20));
 
-        jLabel29.setForeground(new java.awt.Color(51, 51, 51));
-        jLabel29.setText("_________________________________________");
-        jPanel2.add(jLabel29, new org.netbeans.lib.awtextra.AbsoluteConstraints(910, 100, 250, 50));
+        jLabel29.setForeground(new java.awt.Color(51, 204, 255));
+        jLabel29.setText("_______________________________________________");
+        jPanel2.add(jLabel29, new org.netbeans.lib.awtextra.AbsoluteConstraints(950, 270, 290, 30));
 
-        rno.setBackground(new java.awt.Color(204, 255, 255));
+        rno.setBackground(new java.awt.Color(51, 51, 51));
         rno.setFont(rno.getFont().deriveFont(rno.getFont().getSize()+3f));
+        rno.setForeground(new java.awt.Color(255, 255, 255));
         rno.setBorder(null);
         rno.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 rnoActionPerformed(evt);
             }
         });
-        jPanel2.add(rno, new org.netbeans.lib.awtextra.AbsoluteConstraints(910, 140, 240, 40));
+        jPanel2.add(rno, new org.netbeans.lib.awtextra.AbsoluteConstraints(960, 300, 270, 20));
 
-        jLabel30.setForeground(new java.awt.Color(51, 51, 51));
-        jLabel30.setText("_________________________________________");
-        jPanel2.add(jLabel30, new org.netbeans.lib.awtextra.AbsoluteConstraints(910, 150, 250, 50));
+        jLabel30.setForeground(new java.awt.Color(51, 204, 255));
+        jLabel30.setText("_______________________________________________");
+        jPanel2.add(jLabel30, new org.netbeans.lib.awtextra.AbsoluteConstraints(950, 300, 290, 30));
 
         jLabel12.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
+        jLabel12.setForeground(new java.awt.Color(255, 255, 255));
         jLabel12.setText("Checked-In:");
-        jPanel2.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 160, 92, 28));
+        jPanel2.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 150, 92, 20));
 
         jLabel9.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
+        jLabel9.setForeground(new java.awt.Color(255, 255, 255));
         jLabel9.setText("Check-Out:");
-        jPanel2.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 200, 110, 28));
+        jPanel2.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 180, 110, -1));
 
-        cki.setBackground(new java.awt.Color(204, 255, 255));
+        cki.setBackground(new java.awt.Color(51, 51, 51));
         cki.setFont(cki.getFont().deriveFont(cki.getFont().getSize()+3f));
+        cki.setForeground(new java.awt.Color(255, 255, 255));
         cki.setBorder(null);
         cki.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 ckiActionPerformed(evt);
             }
         });
-        jPanel2.add(cki, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 140, 240, 40));
+        jPanel2.add(cki, new org.netbeans.lib.awtextra.AbsoluteConstraints(960, 150, 270, 20));
 
-        jLabel31.setForeground(new java.awt.Color(51, 51, 51));
-        jLabel31.setText("_________________________________________");
-        jPanel2.add(jLabel31, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 150, 250, 50));
+        jLabel31.setForeground(new java.awt.Color(51, 204, 255));
+        jLabel31.setText("_______________________________________________");
+        jPanel2.add(jLabel31, new org.netbeans.lib.awtextra.AbsoluteConstraints(950, 150, 290, 30));
 
-        cko.setBackground(new java.awt.Color(204, 255, 255));
+        cko.setBackground(new java.awt.Color(51, 51, 51));
         cko.setFont(cko.getFont().deriveFont(cko.getFont().getSize()+3f));
+        cko.setForeground(new java.awt.Color(255, 255, 255));
         cko.setBorder(null);
         cko.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 ckoActionPerformed(evt);
             }
         });
-        jPanel2.add(cko, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 180, 240, 40));
+        jPanel2.add(cko, new org.netbeans.lib.awtextra.AbsoluteConstraints(960, 180, 270, 20));
 
-        jLabel32.setForeground(new java.awt.Color(51, 51, 51));
-        jLabel32.setText("_________________________________________");
-        jPanel2.add(jLabel32, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 190, 250, 50));
-
-        jPanel3.setBackground(new java.awt.Color(0, 153, 0));
-
-        jLabel2.setFont(new java.awt.Font("Copperplate Gothic Bold", 1, 36)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(204, 204, 204));
-        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setText("Check-In");
-
-        jButton2.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jButton2.setText("BACK");
-        jButton2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton2MouseClicked(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(114, 114, 114)
-                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 1066, Short.MAX_VALUE)
-                .addGap(29, 29, 29)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18))
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-
-        jPanel2.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1300, -1));
+        jLabel32.setForeground(new java.awt.Color(51, 204, 255));
+        jLabel32.setText("_______________________________________________");
+        jPanel2.add(jLabel32, new org.netbeans.lib.awtextra.AbsoluteConstraints(950, 180, 290, 30));
 
         jLabel17.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
-        jLabel17.setText("Transaction ID:");
-        jPanel2.add(jLabel17, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 100, 120, 28));
+        jLabel17.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel17.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel17.setText("Checked-in by:");
+        jPanel2.add(jLabel17, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 100, 170, 20));
 
-        id.setBackground(new java.awt.Color(204, 255, 255));
-        id.setFont(id.getFont().deriveFont(id.getFont().getSize()+3f));
-        id.setBorder(null);
-        id.setEnabled(false);
-        id.addActionListener(new java.awt.event.ActionListener() {
+        tid.setEditable(false);
+        tid.setBackground(new java.awt.Color(51, 51, 51));
+        tid.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        tid.setForeground(new java.awt.Color(255, 255, 255));
+        tid.setBorder(null);
+        tid.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                idActionPerformed(evt);
+                tidActionPerformed(evt);
             }
         });
-        jPanel2.add(id, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 90, 200, 40));
+        jPanel2.add(tid, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 220, 250, 30));
 
-        jLabel33.setForeground(new java.awt.Color(51, 51, 51));
-        jLabel33.setText("_________________________________________");
-        jPanel2.add(jLabel33, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 100, 210, 50));
+        jLabel33.setForeground(new java.awt.Color(51, 204, 255));
+        jLabel33.setText("______________________________________________");
+        jPanel2.add(jLabel33, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 230, 300, 30));
 
-        jLabel8.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
-        jLabel8.setText("Time");
-        jPanel2.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 70, -1, 28));
+        jPanel4.setBackground(new java.awt.Color(51, 51, 51));
+        jPanel4.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                jPanel4MouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                jPanel4MouseExited(evt);
+            }
+        });
+        jPanel4.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        txttime.setFont(new java.awt.Font("Verdana", 1, 24)); // NOI18N
-        txttime.setText("0");
-        jPanel2.add(txttime, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 100, -1, 28));
+        jPanel5.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        cname.setFont(new java.awt.Font("Verdana", 1, 20)); // NOI18N
+        cname.setForeground(new java.awt.Color(255, 255, 255));
+        cname.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        cname.setText("username");
+        jPanel5.add(cname, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 200, 240, 28));
+        jPanel5.add(cimg, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 240, 230));
+
+        jPanel4.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 30, 240, -1));
+
+        cid.setFont(new java.awt.Font("Verdana", 0, 13)); // NOI18N
+        cid.setForeground(new java.awt.Color(255, 255, 255));
+        cid.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        cid.setText("Current user ID");
+        jPanel4.add(cid, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 240, 20));
+
+        jPanel2.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 90, 260, 280));
+
+        jLabel28.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
+        jLabel28.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel28.setText("Room ID");
+        jPanel2.add(jLabel28, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 240, 92, 20));
+
+        rid.setBackground(new java.awt.Color(51, 51, 51));
+        rid.setFont(rid.getFont().deriveFont(rid.getFont().getSize()+3f));
+        rid.setForeground(new java.awt.Color(255, 255, 255));
+        rid.setBorder(null);
+        rid.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ridActionPerformed(evt);
+            }
+        });
+        jPanel2.add(rid, new org.netbeans.lib.awtextra.AbsoluteConstraints(960, 240, 270, 20));
+
+        jLabel34.setForeground(new java.awt.Color(51, 204, 255));
+        jLabel34.setText("_______________________________________________");
+        jPanel2.add(jLabel34, new org.netbeans.lib.awtextra.AbsoluteConstraints(950, 240, 290, 30));
+
+        jLabel35.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
+        jLabel35.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel35.setText("Room price:");
+        jPanel2.add(jLabel35, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 330, 110, -1));
+
+        rp.setBackground(new java.awt.Color(51, 51, 51));
+        rp.setFont(rp.getFont().deriveFont(rp.getFont().getSize()+3f));
+        rp.setForeground(new java.awt.Color(255, 255, 255));
+        rp.setBorder(null);
+        rp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rpActionPerformed(evt);
+            }
+        });
+        jPanel2.add(rp, new org.netbeans.lib.awtextra.AbsoluteConstraints(960, 330, 270, 20));
+
+        jLabel36.setForeground(new java.awt.Color(51, 204, 255));
+        jLabel36.setText("_______________________________________________");
+        jPanel2.add(jLabel36, new org.netbeans.lib.awtextra.AbsoluteConstraints(950, 330, 290, 30));
 
         jLabel25.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
+        jLabel25.setForeground(new java.awt.Color(255, 255, 255));
         jLabel25.setText("Date");
-        jPanel2.add(jLabel25, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 70, -1, 28));
+        jPanel2.add(jLabel25, new org.netbeans.lib.awtextra.AbsoluteConstraints(820, 70, -1, 28));
 
         txtdate.setFont(new java.awt.Font("Verdana", 1, 24)); // NOI18N
+        txtdate.setForeground(new java.awt.Color(255, 255, 255));
         txtdate.setText("0");
-        jPanel2.add(txtdate, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 100, -1, 28));
+        jPanel2.add(txtdate, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 100, -1, 28));
+
+        jLabel8.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
+        jLabel8.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel8.setText("Time");
+        jPanel2.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(1030, 70, -1, 28));
+
+        txttime.setFont(new java.awt.Font("Verdana", 1, 24)); // NOI18N
+        txttime.setForeground(new java.awt.Color(255, 255, 255));
+        txttime.setText("0");
+        jPanel2.add(txttime, new org.netbeans.lib.awtextra.AbsoluteConstraints(1040, 100, -1, 28));
+
+        jLabel37.setForeground(new java.awt.Color(51, 204, 255));
+        jLabel37.setText("_____________________________________________");
+        jPanel2.add(jLabel37, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 140, 290, 50));
+
+        tuid.setEditable(false);
+        tuid.setBackground(new java.awt.Color(51, 51, 51));
+        tuid.setFont(tuid.getFont().deriveFont(tuid.getFont().getSize()+3f));
+        tuid.setForeground(new java.awt.Color(255, 255, 255));
+        tuid.setHorizontalAlignment(javax.swing.JTextField.LEFT);
+        tuid.setBorder(null);
+        tuid.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tuidActionPerformed(evt);
+            }
+        });
+        jPanel2.add(tuid, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 140, 250, 40));
+
+        jLabel18.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
+        jLabel18.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel18.setText("Employee ID:");
+        jPanel2.add(jLabel18, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 140, 120, 40));
+
+        jLabel38.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
+        jLabel38.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel38.setText("Customer ID:");
+        jPanel2.add(jLabel38, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 220, 120, 30));
+
+        jLabel39.setForeground(new java.awt.Color(51, 204, 255));
+        jLabel39.setText("_____________________________________________");
+        jPanel2.add(jLabel39, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 170, 290, 50));
+
+        tnm.setEditable(false);
+        tnm.setBackground(new java.awt.Color(51, 51, 51));
+        tnm.setFont(tnm.getFont().deriveFont(tnm.getFont().getSize()+3f));
+        tnm.setForeground(new java.awt.Color(255, 255, 255));
+        tnm.setHorizontalAlignment(javax.swing.JTextField.LEFT);
+        tnm.setBorder(null);
+        tnm.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tnmActionPerformed(evt);
+            }
+        });
+        jPanel2.add(tnm, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 170, 250, 40));
+
+        jLabel40.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
+        jLabel40.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel40.setText("Employee name:");
+        jPanel2.add(jLabel40, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 170, 130, 40));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 1184, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 1366, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 693, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 768, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
@@ -690,7 +878,30 @@ public class checkOut extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
-        
+        Session sess = Session.getInstance();
+dbconnect db = new dbconnect();
+
+if (sess.getUid() == 0) {
+    // Handle the case where the session user ID is 0
+} else {
+    cname.setText("" + sess.getFname());
+    cid.setText("" + sess.getUid());
+
+    // Get the current session user image
+    try {
+        ResultSet rsCurrentUser = db.getData("SELECT * FROM tbl_user WHERE u_id = '" + sess.getUid() + "'");
+        if (rsCurrentUser.next()) {
+            cimg.setIcon(ResizeImage(rsCurrentUser.getString("u_image"), null, cimg));
+        }
+        rsCurrentUser.close();
+    } catch (SQLException ex) {
+        System.out.println("" + ex);
+    }
+
+   
+}
+
+
         
     }//GEN-LAST:event_formWindowActivated
 
@@ -854,14 +1065,6 @@ public class checkOut extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_nodActionPerformed
 
-    private void cnm1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cnm1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cnm1ActionPerformed
-
-    private void cno1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cno1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cno1ActionPerformed
-
     private void rnoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rnoActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_rnoActionPerformed
@@ -874,19 +1077,38 @@ public class checkOut extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_ckoActionPerformed
 
-    private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
-        adminDash ads = new adminDash();
-        ads.setVisible(true);
-        this.dispose();
-    }//GEN-LAST:event_jButton2MouseClicked
-
-    private void idActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_idActionPerformed
+    private void tidActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tidActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_idActionPerformed
+    }//GEN-LAST:event_tidActionPerformed
 
     private void rtpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rtpActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_rtpActionPerformed
+
+    private void ridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ridActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ridActionPerformed
+
+    private void rpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rpActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_rpActionPerformed
+
+    private void jPanel4MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel4MouseEntered
+         jPanel4.setBackground(new Color(102,102,102));
+         
+    }//GEN-LAST:event_jPanel4MouseEntered
+
+    private void jPanel4MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel4MouseExited
+        jPanel4.setBackground(new Color(51,51,51));
+    }//GEN-LAST:event_jPanel4MouseExited
+
+    private void tuidActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tuidActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tuidActionPerformed
+
+    private void tnmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tnmActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tnmActionPerformed
 
     /**
      * @param args the command line arguments
@@ -927,16 +1149,15 @@ public class checkOut extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField cki;
-    private javax.swing.JTextField cko;
-    private javax.swing.JTextField cnm;
-    private javax.swing.JTextField cnm1;
-    private javax.swing.JTextField cno;
-    private javax.swing.JTextField cno1;
+    private javax.swing.JLabel cid;
+    private javax.swing.JLabel cimg;
+    public javax.swing.JTextField cki;
+    public javax.swing.JTextField cko;
+    private javax.swing.JLabel cname;
+    public javax.swing.JTextField cnm;
+    public javax.swing.JTextField cno;
     private javax.swing.JTable cosTable;
-    private javax.swing.JTextField id;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -945,8 +1166,8 @@ public class checkOut extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel19;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel22;
@@ -955,12 +1176,20 @@ public class checkOut extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel25;
     private javax.swing.JLabel jLabel26;
     private javax.swing.JLabel jLabel27;
+    private javax.swing.JLabel jLabel28;
     private javax.swing.JLabel jLabel29;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel30;
     private javax.swing.JLabel jLabel31;
     private javax.swing.JLabel jLabel32;
     private javax.swing.JLabel jLabel33;
+    private javax.swing.JLabel jLabel34;
+    private javax.swing.JLabel jLabel35;
+    private javax.swing.JLabel jLabel36;
+    private javax.swing.JLabel jLabel37;
+    private javax.swing.JLabel jLabel38;
+    private javax.swing.JLabel jLabel39;
+    private javax.swing.JLabel jLabel40;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
@@ -968,18 +1197,24 @@ public class checkOut extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField nod;
+    public javax.swing.JTextField nod;
     private javax.swing.JPanel p10;
     private javax.swing.JPanel p3;
     private javax.swing.JPanel p4;
     private javax.swing.JPanel p5;
     private javax.swing.JPanel p9;
     public javax.swing.JTextField pw;
-    private javax.swing.JTextField rno;
-    private javax.swing.JTextField rtp;
-    private javax.swing.JTextField tprc;
+    public javax.swing.JTextField rid;
+    public javax.swing.JTextField rno;
+    public javax.swing.JTextField rp;
+    public javax.swing.JTextField rtp;
+    public javax.swing.JTextField tid;
+    public javax.swing.JTextField tnm;
+    public javax.swing.JTextField tprc;
+    public javax.swing.JTextField tuid;
     private javax.swing.JLabel txtdate;
     private javax.swing.JLabel txttime;
     // End of variables declaration//GEN-END:variables

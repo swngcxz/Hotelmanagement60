@@ -13,11 +13,11 @@ import javax.swing.JOptionPane;
 
 public class dbconnect {
     
-    private Connection connect;
+    public Connection connect;
     
      public dbconnect(){
             try{
-                connect = DriverManager.getConnection("jdbc:mysql://localhost:3306/dbssample", "root", "");
+                connect = DriverManager.getConnection("jdbc:mysql://localhost:3306/hoteldbs", "root", "");
             }catch(SQLException ex){
                     System.out.println("Can't connect to database: "+ex.getMessage());
             }
@@ -99,6 +99,9 @@ public class dbconnect {
         public void delete(int id, String table, String tblid){
             this.delete(id, table, tblid, true);
         }
+
+
+   
   }
 
 

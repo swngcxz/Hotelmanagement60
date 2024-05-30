@@ -17,6 +17,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import register.regDash;
+import register.userForm;
 import user.userDash;
 
 /**
@@ -424,13 +425,10 @@ public class loginForm extends javax.swing.JFrame {
     }//GEN-LAST:event_p1MouseExited
 
     private void p1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p1MouseClicked
-       adminDB adb = new adminDB();
-       
-       adb.heading.setText("GUEST MODE");
-       
-       
-       adb.setVisible(true);
+       userForm usf = new userForm();
+       usf.setVisible(true);
        this.dispose();
+       
     }//GEN-LAST:event_p1MouseClicked
 
     /**

@@ -12,8 +12,10 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -22,6 +24,7 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import static javax.swing.JOptionPane.showMessageDialog;
 import javax.swing.JTextField;
 import net.proteanit.sql.DbUtils;
 import user.userDash;
@@ -68,7 +71,6 @@ public class roomEdit extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
-        rtp = new javax.swing.JTextField();
         jLabel19 = new javax.swing.JLabel();
         prc = new javax.swing.JTextField();
         jLabel21 = new javax.swing.JLabel();
@@ -79,8 +81,10 @@ public class roomEdit extends javax.swing.JFrame {
         rsts = new javax.swing.JComboBox<>();
         jLabel23 = new javax.swing.JLabel();
         jLabel24 = new javax.swing.JLabel();
+        rtp = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setUndecorated(true);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowActivated(java.awt.event.WindowEvent evt) {
                 formWindowActivated(evt);
@@ -113,9 +117,9 @@ public class roomEdit extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 533, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(666, Short.MAX_VALUE))
+                .addGap(41, 41, 41)
+                .addComponent(jButton1)
+                .addContainerGap(655, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -123,7 +127,10 @@ public class roomEdit extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(9, 9, 9)
+                        .addComponent(jButton1)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -218,7 +225,7 @@ public class roomEdit extends javax.swing.JFrame {
 
         jLabel10.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
         jLabel10.setText("Room Type:");
-        jPanel2.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 170, 92, 28));
+        jPanel2.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 170, 100, 28));
 
         pw.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jPanel2.add(pw, new org.netbeans.lib.awtextra.AbsoluteConstraints(-20, 90, -1, -1));
@@ -239,19 +246,9 @@ public class roomEdit extends javax.swing.JFrame {
         jLabel14.setText("Price:");
         jPanel2.add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 220, -1, 28));
 
-        rtp.setBackground(new java.awt.Color(204, 255, 255));
-        rtp.setFont(rtp.getFont().deriveFont(rtp.getFont().getSize()+3f));
-        rtp.setBorder(null);
-        rtp.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rtpActionPerformed(evt);
-            }
-        });
-        jPanel2.add(rtp, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 160, 240, 40));
-
         jLabel19.setForeground(new java.awt.Color(51, 51, 51));
         jLabel19.setText("_________________________________________");
-        jPanel2.add(jLabel19, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 170, 250, 50));
+        jPanel2.add(jLabel19, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 180, 250, 40));
 
         prc.setBackground(new java.awt.Color(204, 255, 255));
         prc.setFont(prc.getFont().deriveFont(prc.getFont().getSize()+3f));
@@ -265,7 +262,7 @@ public class roomEdit extends javax.swing.JFrame {
 
         jLabel21.setForeground(new java.awt.Color(51, 51, 51));
         jLabel21.setText("_________________________________________");
-        jPanel2.add(jLabel21, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 120, 250, 50));
+        jPanel2.add(jLabel21, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 120, 250, 60));
 
         p9.setBackground(new java.awt.Color(102, 102, 102));
         p9.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -314,8 +311,10 @@ public class roomEdit extends javax.swing.JFrame {
         rno.setForeground(new java.awt.Color(51, 51, 51));
         jPanel2.add(rno, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 110, 250, 40));
 
+        rsts.setBackground(new java.awt.Color(204, 255, 255));
         rsts.setFont(new java.awt.Font("Tahoma", 0, 13)); // NOI18N
         rsts.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Booked", "Active", "under Maintaintance", "Unclean" }));
+        rsts.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jPanel2.add(rsts, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 270, 250, 40));
 
         jLabel23.setForeground(new java.awt.Color(51, 51, 51));
@@ -325,6 +324,13 @@ public class roomEdit extends javax.swing.JFrame {
         jLabel24.setForeground(new java.awt.Color(51, 51, 51));
         jLabel24.setText("_________________________________________");
         jPanel2.add(jLabel24, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 80, 250, 50));
+
+        rtp.setBackground(new java.awt.Color(204, 255, 255));
+        rtp.setEditable(true);
+        rtp.setFont(new java.awt.Font("Tahoma", 0, 13)); // NOI18N
+        rtp.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Regular", "Deluxe", "VIP", "Penthouse" }));
+        rtp.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jPanel2.add(rtp, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 160, 250, 40));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -347,16 +353,55 @@ public class roomEdit extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowActivated
 
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
-        roomDetails rdt = new roomDetails();
-        rdt.setVisible(true);
+        
         this.dispose();
     }//GEN-LAST:event_jButton1MouseClicked
 
     private void updateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_updateMouseClicked
-         dbconnect dbc = new dbconnect();
+    dbconnect dbc = new dbconnect();
 
-                dbc.updateData("UPDATE tbl_rooms SET roomType = '"+rtp.getText()+"',price = '"+prc.getText()+"', "
-                        + "r_status = '"+rsts.getSelectedItem()+"' WHERE roomNo = '"+rno.getText()+"'");
+    try {
+        // Validate input fields
+        if (rno.getText().isEmpty() || rtp.getSelectedItem() == null || prc.getText().isEmpty() || rsts.getSelectedItem() == null) {
+            JOptionPane.showMessageDialog(null, "All fields must not be empty.");
+            return;
+        }
+
+        // Prepare update query
+        String updateQuery = "UPDATE tbl_room SET roomType = ?, r_price = ?, r_status = ? WHERE roomNo = ?";
+
+        // Create PreparedStatement
+        PreparedStatement pst = dbc.connect.prepareStatement(updateQuery);
+
+        // Set parameters
+        pst.setString(1, rtp.getSelectedItem().toString());
+        pst.setBigDecimal(2, new BigDecimal(prc.getText())); // Ensure r_price is correctly formatted as a decimal
+        pst.setString(3, rsts.getSelectedItem().toString());
+        pst.setString(4, rno.getText());
+
+        // Execute update
+        int rowsUpdated = pst.executeUpdate();
+
+        // Check if the update was successful
+        if (rowsUpdated > 0) {
+            // Open room details window and dispose of the current window
+            roomDetails rdl = new roomDetails();
+            rdl.setVisible(true);
+            this.dispose();
+
+            // Show success message
+            JOptionPane.showMessageDialog(null, "Room updated.");
+        } else {
+            // Show message if no rows were updated
+            JOptionPane.showMessageDialog(null, "No changes made.");
+        }
+
+        pst.close();
+    } catch (Exception ex) {
+        ex.printStackTrace();
+        JOptionPane.showMessageDialog(null, "Error updating room: " + ex.getMessage());
+    }
+                
              
               
     }//GEN-LAST:event_updateMouseClicked
@@ -383,14 +428,10 @@ public class roomEdit extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_p3MouseClicked
 
-    private void rtpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rtpActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rtpActionPerformed
-
     private void p9MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p9MouseClicked
         rid.setText("");
         rno.setText("");
-        rtp.setText("");
+        rtp.setSelectedItem("");
         prc.setText("");
         rsts.setSelectedItem("");
     }//GEN-LAST:event_p9MouseClicked
@@ -473,7 +514,7 @@ public class roomEdit extends javax.swing.JFrame {
     public javax.swing.JLabel rid;
     public javax.swing.JLabel rno;
     public javax.swing.JComboBox<String> rsts;
-    public javax.swing.JTextField rtp;
+    public javax.swing.JComboBox<String> rtp;
     private javax.swing.JPanel update;
     // End of variables declaration//GEN-END:variables
 }
