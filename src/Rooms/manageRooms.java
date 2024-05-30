@@ -463,10 +463,12 @@ public class manageRooms extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
         rt2 = new javax.swing.JTextField();
-        jLabel19 = new javax.swing.JLabel();
-        rt3 = new javax.swing.JTextField();
+        conv = new javax.swing.JLabel();
         jLabel20 = new javax.swing.JLabel();
+        rt3 = new javax.swing.JTextField();
         rt5 = new javax.swing.JTextField();
+        namev = new javax.swing.JLabel();
+        jLabel19 = new javax.swing.JLabel();
         jLabel21 = new javax.swing.JLabel();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel3 = new javax.swing.JPanel();
@@ -677,9 +679,13 @@ public class manageRooms extends javax.swing.JFrame {
         });
         jPanel2.add(rt2, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 210, 260, 40));
 
-        jLabel19.setForeground(new java.awt.Color(51, 51, 51));
-        jLabel19.setText("_________________________________________");
-        jPanel2.add(jLabel19, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 220, 250, 50));
+        conv.setForeground(new java.awt.Color(255, 0, 0));
+        conv.setToolTipText("");
+        jPanel2.add(conv, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 310, 260, -1));
+
+        jLabel20.setForeground(new java.awt.Color(51, 51, 51));
+        jLabel20.setText("_________________________________________");
+        jPanel2.add(jLabel20, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 280, 250, 50));
 
         rt3.setBackground(new java.awt.Color(204, 255, 255));
         rt3.setFont(rt3.getFont().deriveFont(rt3.getFont().getSize()+3f));
@@ -691,10 +697,6 @@ public class manageRooms extends javax.swing.JFrame {
         });
         jPanel2.add(rt3, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 270, 260, 40));
 
-        jLabel20.setForeground(new java.awt.Color(51, 51, 51));
-        jLabel20.setText("_________________________________________");
-        jPanel2.add(jLabel20, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 280, 250, 50));
-
         rt5.setBackground(new java.awt.Color(204, 255, 255));
         rt5.setFont(rt5.getFont().deriveFont(rt5.getFont().getSize()+3f));
         rt5.setBorder(null);
@@ -704,6 +706,13 @@ public class manageRooms extends javax.swing.JFrame {
             }
         });
         jPanel2.add(rt5, new org.netbeans.lib.awtextra.AbsoluteConstraints(940, 250, 240, 40));
+
+        namev.setForeground(new java.awt.Color(255, 0, 0));
+        jPanel2.add(namev, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 250, 250, -1));
+
+        jLabel19.setForeground(new java.awt.Color(51, 51, 51));
+        jLabel19.setText("_________________________________________");
+        jPanel2.add(jLabel19, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 220, 250, 50));
 
         jLabel21.setForeground(new java.awt.Color(51, 51, 51));
         jLabel21.setText("_________________________________________");
@@ -1198,103 +1207,94 @@ public class manageRooms extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1MouseClicked
 
     private void p4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p4MouseClicked
-            dbconnect db = new dbconnect();
-            Session sess = Session.getInstance();
-            
-            
-            try {
-                    // Check if u_id exists in tbl_user before inserting into tbl_transaction
-                    String checkUserIdQuery = "SELECT * FROM tbl_user WHERE u_id = ?";
-                    PreparedStatement checkUserIdPst = db.connect.prepareStatement(checkUserIdQuery);
-                    checkUserIdPst.setString(1, String.valueOf(sess.getUid())); // Assuming sess.getUid() retrieves the user ID
-                    ResultSet userRs = checkUserIdPst.executeQuery();
+        dbconnect db = new dbconnect();
+        Session sess = Session.getInstance();
 
-                    if (userRs.next()) {
-                        // u_id exists, proceed with transaction insertion
-                        // Your transaction insertion code here
-                    } else {
-                        // u_id does not exist in tbl_user, show error message or handle accordingly
-                        JOptionPane.showMessageDialog(null, "Invalid user ID.");
-                    }
+        // Validate input fields
+        if (rt2.getText().isEmpty() || rt3.getText().isEmpty() || tprc.getText().isEmpty() || txtrt.getSelectedItem() == null || txtrno.getSelectedItem() == null || cout.getDate() == null) {
+            JOptionPane.showMessageDialog(null, "Please fill in all required fields.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-                    userRs.close();
-                    checkUserIdPst.close();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                    JOptionPane.showMessageDialog(null, "Error processing transaction.");
-                }
+        // Validate name field (rt2) to be a varchar (not integers)
+        if (rt2.getText().matches("\\d+")) {
+            namev.setText("Name should be a letters, not an integer.");
+            return;
+        }
 
-            try {
-                // Get the selected roomID from the room combo box
-                int roomID = Integer.parseInt(roomid.getText());
-
-                // Extract the numeric part from the total payment text field
-                String totalPaymentText = tprc.getText().replace("PHP ", ""); // Remove the "PHP " prefix
-                double totalPayment = Double.parseDouble(totalPaymentText);
-
-                // Get the current date in the required format
-                String checkInDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-                String checkOutDate = null;  // Initialize checkOutDate as null
-
-                    // Check if cout is not null and has a selected date
-                    if (cout.getDate() != null) {
-                        // Get the selected checkout date and format it
-                        checkOutDate = new SimpleDateFormat("yyyy-MM-dd").format(cout.getDate());
-                    }
-
-                // Insert data into tbl_transaction
-                String insertTransactionQuery = "INSERT INTO tbl_transaction (u_id, roomID, name, contact, check_in, check_out, totalPayment, status)" +
-                                                " VALUES (?, ?, ?, ?, ?, ?, ?, 'Active')";
-                PreparedStatement insertTransactionPst = db.connect.prepareStatement(insertTransactionQuery);
-                insertTransactionPst.setString(1, String.valueOf(sess.getUid())); // Assuming u_id is a string in the database
-                insertTransactionPst.setInt(2, roomID);
-                insertTransactionPst.setString(3, rt2.getText());
-                insertTransactionPst.setString(4, rt3.getText());
-                insertTransactionPst.setString(5, checkInDate);
-                insertTransactionPst.setString(6, checkOutDate);
-                insertTransactionPst.setDouble(7, totalPayment);
-
-                int rowsInserted = insertTransactionPst.executeUpdate();
-
-                if (rowsInserted > 0) {
-                    System.out.println("Transaction details inserted into tbl_transaction.");
-
-                    // Update r_status in tbl_room to 'Booked'
-                    String updateRoomQuery = "UPDATE tbl_room SET r_status = 'Booked' WHERE roomID = ?";
-                    PreparedStatement updateRoomPst = db.connect.prepareStatement(updateRoomQuery);
-                    updateRoomPst.setInt(1, roomID);
-
-                    int rowsUpdated = updateRoomPst.executeUpdate();
-
-                    if (rowsUpdated > 0) {
-                        System.out.println("Room status updated to 'Booked' in tbl_room.");
-                    } else {
-                        System.out.println("Failed to update room status in tbl_room.");
-                    }
-
-                    updateRoomPst.close();
-
-                    // Display success message and update GUI
-                    JOptionPane.showMessageDialog(null, "Checked In");
-                    DefaultTableModel model = (DefaultTableModel) cosTable.getModel();
-                    model.setRowCount(0);
-                    displayData();
-
-                   
-                    manageRooms mrm = new manageRooms();
-                    mrm.setVisible(true);
-                    this.dispose();
-        
-                    
-                } else {
-                    JOptionPane.showMessageDialog(null, "Failed to insert transaction details.");
-                }
-
-                insertTransactionPst.close();
-            } catch (SQLException | NumberFormatException ex) {
-                ex.printStackTrace();
-                JOptionPane.showMessageDialog(null, "Error processing transaction.");
+        // Validate contact number (rt3) to be integers and exactly eleven digits long
+        try {
+            long contactNumber = Long.parseLong(rt3.getText());
+            if (String.valueOf(contactNumber).length() != 11) {
+                throw new NumberFormatException();
             }
+        } catch (NumberFormatException e) {
+            conv.setText("Contact number should be a valid 11-digit integer.");
+            return;
+        }
+
+        // Get the current date
+        String currentDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+
+        // Validate checkout date (cout) not before the current date
+        String selectedCheckoutDate = new SimpleDateFormat("yyyy-MM-dd").format(cout.getDate());
+        if (selectedCheckoutDate.compareTo(currentDate) < 0) {
+            JOptionPane.showMessageDialog(null, "Checkout date cannot be before the current date.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        try {
+            // Your transaction insertion code here
+            // Insert data into tbl_transaction
+            String insertTransactionQuery = "INSERT INTO tbl_transaction (u_id, roomID, name, contact, check_in, check_out, totalPayment, status)" +
+                    " VALUES (?, ?, ?, ?, ?, ?, ?, 'Active')";
+            PreparedStatement insertTransactionPst = db.connect.prepareStatement(insertTransactionQuery);
+            insertTransactionPst.setString(1, String.valueOf(sess.getUid())); // Assuming u_id is a string in the database
+            insertTransactionPst.setInt(2, Integer.parseInt(txtrno.getSelectedItem().toString())); // Assuming txtrno contains the room ID
+            insertTransactionPst.setString(3, rt2.getText());
+            insertTransactionPst.setString(4, rt3.getText());
+            insertTransactionPst.setString(5, currentDate); // Use current date as check-in date
+            insertTransactionPst.setString(6, selectedCheckoutDate); // Use selected checkout date
+            insertTransactionPst.setDouble(7, Double.parseDouble(txtrt.getSelectedItem().toString().replace("PHP ", ""))); // Remove "PHP " prefix and parse as double
+
+            int rowsInserted = insertTransactionPst.executeUpdate();
+
+            if (rowsInserted > 0) {
+                System.out.println("Transaction details inserted into tbl_transaction.");
+
+                // Update r_status in tbl_room to 'Booked'
+                String updateRoomQuery = "UPDATE tbl_room SET r_status = 'Booked' WHERE roomID = ?";
+                PreparedStatement updateRoomPst = db.connect.prepareStatement(updateRoomQuery);
+                updateRoomPst.setInt(1, Integer.parseInt(txtrno.getSelectedItem().toString())); // Assuming txtrno contains the room ID
+
+                int rowsUpdated = updateRoomPst.executeUpdate();
+
+                if (rowsUpdated > 0) {
+                    System.out.println("Room status updated to 'Booked' in tbl_room.");
+                } else {
+                    System.out.println("Failed to update room status in tbl_room.");
+                }
+
+                updateRoomPst.close();
+
+                // Display success message and update GUI
+                JOptionPane.showMessageDialog(null, "Checked In");
+                DefaultTableModel model = (DefaultTableModel) cosTable.getModel();
+                model.setRowCount(0);
+                displayData();
+
+                manageRooms mrm = new manageRooms();
+                mrm.setVisible(true);
+                this.dispose();
+            } else {
+                JOptionPane.showMessageDialog(null, "Failed to insert transaction details.");
+            }
+
+            insertTransactionPst.close();
+        } catch (SQLException | NumberFormatException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error processing transaction.");
+        }
 
     }//GEN-LAST:event_p4MouseClicked
 
@@ -1628,7 +1628,16 @@ if (row < 0) {
     }//GEN-LAST:event_coutMouseClicked
 
     private void vd1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_vd1MouseClicked
-       if (cout.getDate() == null || txtrno.getSelectedItem() == null) {
+       
+        
+        String currentDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+        String selectedCheckoutDate = new SimpleDateFormat("yyyy-MM-dd").format(cout.getDate());
+        if (selectedCheckoutDate.compareTo(currentDate) < 0) {
+            JOptionPane.showMessageDialog(null, "Checkout date cannot be before the current date.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        if (cout.getDate() == null || txtrno.getSelectedItem() == null) {
             // Set text to prompt user to select date or room number
             tprc.setText(rt5.getText());
         } else {
@@ -1703,6 +1712,7 @@ if (row < 0) {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField cin;
+    private javax.swing.JLabel conv;
     private javax.swing.JTable cosTable;
     private com.toedter.calendar.JDateChooser cout;
     private javax.swing.JTextField id;
@@ -1747,6 +1757,7 @@ if (row < 0) {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JLabel namev;
     private javax.swing.JPanel p10;
     private javax.swing.JPanel p11;
     private javax.swing.JPanel p4;

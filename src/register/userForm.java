@@ -888,22 +888,6 @@ public class userForm extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_formWindowActivated
 
-    private void disableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_disableMouseClicked
-        password.setEchoChar((char)0);
-        disable.setVisible(false);
-        disable.setEnabled(false);
-        show.setEnabled(true);
-        show.setEnabled(true);
-    }//GEN-LAST:event_disableMouseClicked
-
-    private void showMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showMouseClicked
-        password.setEchoChar((char)8226);
-        disable.setVisible(true);
-        disable.setEnabled(true);
-        show.setEnabled(false);
-        show.setEnabled(false);
-    }//GEN-LAST:event_showMouseClicked
-
     private void passwordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passwordActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_passwordActionPerformed
@@ -921,6 +905,22 @@ public class userForm extends javax.swing.JFrame {
     private void uidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uidaActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_uidaActionPerformed
+
+    private void disableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_disableMouseClicked
+        password.setEchoChar((char)0);
+        disable.setVisible(false);
+        disable.setEnabled(false);
+        show.setEnabled(true);
+        show.setEnabled(true);
+    }//GEN-LAST:event_disableMouseClicked
+
+    private void showMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showMouseClicked
+        password.setEchoChar((char)8226);
+        disable.setVisible(true);
+        disable.setEnabled(true);
+        show.setEnabled(false);
+        show.setEnabled(false);
+    }//GEN-LAST:event_showMouseClicked
 
     /**
      * @param args the command line arguments

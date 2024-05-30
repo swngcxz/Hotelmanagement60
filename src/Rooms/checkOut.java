@@ -18,10 +18,16 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Blob;
+import java.sql.PreparedStatement;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -201,6 +207,16 @@ public class checkOut extends javax.swing.JFrame {
                 }
             }
             
+            
+             public String getTransactionID() {
+        if (transid != null && !transid.getText().isEmpty()) {
+            return transid.getText();
+        } else {
+            JOptionPane.showMessageDialog(null, "Please select a transaction to check out.", "Reminder", JOptionPane.WARNING_MESSAGE);
+            return null;
+        }
+    }
+            
      
      
         
@@ -222,8 +238,8 @@ public class checkOut extends javax.swing.JFrame {
 
         jPanel2 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
         p3 = new javax.swing.JPanel();
         jLabel11 = new javax.swing.JLabel();
         p4 = new javax.swing.JPanel();
@@ -263,7 +279,6 @@ public class checkOut extends javax.swing.JFrame {
         jLabel31 = new javax.swing.JLabel();
         cko = new javax.swing.JTextField();
         jLabel32 = new javax.swing.JLabel();
-        jLabel17 = new javax.swing.JLabel();
         tid = new javax.swing.JTextField();
         jLabel33 = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
@@ -288,6 +303,9 @@ public class checkOut extends javax.swing.JFrame {
         jLabel39 = new javax.swing.JLabel();
         tnm = new javax.swing.JTextField();
         jLabel40 = new javax.swing.JLabel();
+        jLabel41 = new javax.swing.JLabel();
+        jLabel42 = new javax.swing.JLabel();
+        transid = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -305,12 +323,6 @@ public class checkOut extends javax.swing.JFrame {
         jPanel1.setBackground(new java.awt.Color(153, 0, 0));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel1.setFont(new java.awt.Font("Copperplate Gothic Bold", 1, 36)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(204, 204, 204));
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Check-Out");
-        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 10, 1120, -1));
-
         jButton1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jButton1.setText("BACK");
         jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -320,6 +332,12 @@ public class checkOut extends javax.swing.JFrame {
             }
         });
         jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1250, 10, 73, 41));
+
+        jLabel1.setFont(new java.awt.Font("Copperplate Gothic Bold", 1, 36)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(204, 204, 204));
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText("Check-Out");
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 10, 1120, -1));
 
         jPanel2.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1370, 70));
 
@@ -697,12 +715,6 @@ public class checkOut extends javax.swing.JFrame {
         jLabel32.setText("_______________________________________________");
         jPanel2.add(jLabel32, new org.netbeans.lib.awtextra.AbsoluteConstraints(950, 180, 290, 30));
 
-        jLabel17.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
-        jLabel17.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel17.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel17.setText("Checked-in by:");
-        jPanel2.add(jLabel17, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 100, 170, 20));
-
         tid.setEditable(false);
         tid.setBackground(new java.awt.Color(51, 51, 51));
         tid.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
@@ -858,6 +870,31 @@ public class checkOut extends javax.swing.JFrame {
         jLabel40.setText("Employee name:");
         jPanel2.add(jLabel40, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 170, 130, 40));
 
+        jLabel41.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
+        jLabel41.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel41.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel41.setText("Checked-in by:");
+        jPanel2.add(jLabel41, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 120, 170, 20));
+
+        jLabel42.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
+        jLabel42.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel42.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel42.setText("Transaction ID:");
+        jPanel2.add(jLabel42, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 80, 170, 20));
+
+        transid.setEditable(false);
+        transid.setBackground(new java.awt.Color(51, 51, 51));
+        transid.setFont(new java.awt.Font("Verdana", 1, 20)); // NOI18N
+        transid.setForeground(new java.awt.Color(255, 255, 255));
+        transid.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        transid.setBorder(null);
+        transid.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                transidActionPerformed(evt);
+            }
+        });
+        jPanel2.add(transid, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 80, 130, 20));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -912,41 +949,53 @@ if (sess.getUid() == 0) {
     }//GEN-LAST:event_jButton1MouseClicked
 
     private void p4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p4MouseClicked
-    
-        dbconnect db = new dbconnect();
+         dbconnect db = new dbconnect();
         int row = cosTable.getSelectedRow();
 
-        
+        if (row == -1) {
+            JOptionPane.showMessageDialog(null, "Please select a transaction to check out.", "Reminder", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
         TableModel mod = cosTable.getModel();
-               try{
+        try {
+            int transactionID = (int) mod.getValueAt(row, 0);
+            ResultSet rs = db.getData("SELECT * FROM tbl_transaction WHERE transID = " + transactionID);
 
-               ResultSet rs = db.getData("SELECT * FROM tbl_cost WHERE roomNo = '"+mod.getValueAt(row, 3)+"'");
+            if (rs.next()) {
+                int l = JOptionPane.showConfirmDialog(null, "Are you sure you want to check out?", "Select", JOptionPane.YES_NO_OPTION);
 
-               if(rs.next()){
-                   ResultSet up = db.getData("SELECT * FROM tbl_rooms WHERE roomNo = '"+mod.getValueAt(row, 3)+"'");
-                   Object val = rs.getString("id");
-                   String id = val.toString();
+                if (l == 0) {
+                    // Delete the transaction from tbl_archived
+                    db.delete(transactionID, "tbl_archived", "transID", false);
 
-                   int l = JOptionPane.showConfirmDialog(null, "Are you Sure you want to Check Out?", "Select", JOptionPane.YES_NO_OPTION);
+                    // Archive the transaction data to tbl_archived
+                    PreparedStatement archiveStmt = db.connect.prepareStatement(
+                            "INSERT INTO tbl_archived ( u_id, roomID, name, contact, check_in, check_out, totalPayment, status) " +
+                            "SELECT u_id, roomID, name, contact, check_in, check_out, totalPayment, 'Archived' FROM tbl_transaction WHERE roomID = ?"
+                    );
+                    archiveStmt.setInt(1, transactionID);
+                    archiveStmt.executeUpdate();
 
-                   if(l == 0){
-                       int s_id = Integer.parseInt(id);
-                       db.delete(s_id,"tbl_cost","id",false);
-                       if(up.next()){
-                           db.updateData("UPDATE tbl_rooms SET r_status = 'Archived' WHERE roomNo = '"+mod.getValueAt(row, 3)+"'",false);
-                           JOptionPane.showMessageDialog(null, "Checked out");
-                       }
-                   }
-                   DefaultTableModel model = (DefaultTableModel)cosTable.getModel();
-                   model.setRowCount(0);
-                   displayData(); 
+                    // Delete the transaction from tbl_transaction
+                    db.delete(transactionID, "tbl_transaction", "transID", false);
 
+                    // Update the status in tbl_room
+                    db.updateData("UPDATE tbl_room SET r_status = 'Unclean' WHERE roomID = '" + mod.getValueAt(row, 1) + "'", false);
+
+                    JOptionPane.showMessageDialog(null, "Checked out");
+
+                    DefaultTableModel model = (DefaultTableModel) cosTable.getModel();
+                    model.setRowCount(0);
+                    displayData();
+                }
             }
 
-            } catch (SQLException ex) 
-            {
-                 Logger.getLogger(manageRooms.class.getName()).log(Level.SEVERE, null, ex);
-             }        
+        } catch (SQLException ex) {
+            Logger.getLogger(checkOut.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+
         
     }//GEN-LAST:event_p4MouseClicked
 
@@ -979,7 +1028,9 @@ if (sess.getUid() == 0) {
     }//GEN-LAST:event_cnoActionPerformed
 
     private void p9MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p9MouseClicked
-        // TODO add your handling code here:
+        checkOut cht = new checkOut();
+        cht.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_p9MouseClicked
 
     private void p9MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p9MouseEntered
@@ -999,44 +1050,92 @@ if (sess.getUid() == 0) {
     }//GEN-LAST:event_tprcActionPerformed
 
     private void p10MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p10MouseClicked
-        int rowIndex = cosTable.getSelectedRow();
-        
-        if(rowIndex < 0 )
-        {
-            JOptionPane.showMessageDialog(null, "Please select an item!");
-        }
-        else
-        {
+        dbconnect db = new dbconnect();
+        int row = cosTable.getSelectedRow();
 
-            try
-            {
-                dbconnect db = new dbconnect();
-                TableModel tbl= cosTable.getModel();
-                ResultSet rs = db.getData("SELECT * FROM tbl_user WHERE u_id = '"+tbl.getValueAt(rowIndex, 0)+"'");
-                if(rs.next())
-                {
-                    
-  
-                    cnm.setText(""+rs.getInt("Name"));
-                    cno.setText(""+rs.getString("ContactNo"));
-                    rtp.setText(""+rs.getString("RoomType"));
-                    rno.setText(""+rs.getString("RoomNo"));
-                    cki.setText(""+rs.getString("Check_In"));
-                    cko.setText(""+rs.getString("Check_Out"));
-                   
-                    
-                    
-                    
-                }
-                
-            }
-            catch(SQLException ex)
-            {
-                System.out.println(""+ex);
-
-            }
+        if (row < 0) {
+            JOptionPane.showMessageDialog(null, "Please Select");
+        } else {
             
+            TableModel mod = cosTable.getModel();
+            try {
+                String transID = mod.getValueAt(row, 0).toString(); // Assuming column index 2 contains u_id
+
+                // Construct the SQL query with proper syntax and concatenation
+                String sql = "SELECT t.transID, t.roomID, t.u_id, t.name, t.Contact, r.roomType, r.roomNo, r.r_price, t.Check_In, t.Check_Out, t.totalPayment, t.status, u.u_fname, u.u_image " +
+                             "FROM tbl_transaction t " +
+                             "JOIN tbl_room r ON t.roomID = r.roomID " +
+                             "JOIN tbl_user u ON t.u_id = u.u_id " +
+                             "WHERE t.transID = '" + transID + "'";
+
+                ResultSet rs = db.getData(sql);
+
+                if (rs.next()) {
+                    // Extract data from ResultSet and set to corresponding components in checkOut frame
+                    tid.setText(rs.getString("transID"));
+                    cnm.setText(rs.getString("name"));
+                    cno.setText(rs.getString("Contact"));
+                    cki.setText(rs.getString("Check_In"));
+                    
+                    rid.setText(rs.getString("roomID"));
+                    rtp.setText(rs.getString("roomType"));
+                    rno.setText(rs.getString("roomNo"));
+                    rp.setText(rs.getString("r_price"));
+                    
+                    tnm.setText(rs.getString("u_fname"));
+                    tuid.setText(rs.getString("u_id"));
+                    transid.setText(rs.getString("transID"));
+
+                    // Handle image (not shown in the provided code)
+
+                    // Check if Check_Out is null before calculating nod (number of days)
+                    String checkOutDate = rs.getString("Check_Out");
+                    String checkInDate = rs.getString("Check_In").split(" ")[0]; // Extract date part
+                    LocalDate checkIn = LocalDate.parse(checkInDate);
+
+                    if (checkOutDate != null && !checkOutDate.isEmpty()) {
+                        try {
+                            LocalDate checkOut;
+                            if (checkOutDate.length() == 10) {
+                                // If Check_Out is in the format "yyyy-MM-dd"
+                                checkOut = LocalDate.parse(checkOutDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                            } else {
+                                // If Check_Out is in the format "yyyy-MM-dd HH:mm:ss.S"
+                                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
+                                LocalDateTime checkOutDateTime = LocalDateTime.parse(checkOutDate, formatter);
+                                checkOut = checkOutDateTime.toLocalDate();
+                            }
+                            long numberOfDays = ChronoUnit.DAYS.between(checkIn, checkOut);
+                            nod.setText(String.valueOf(numberOfDays)); // Set the total number of days (nod)
+                        } catch (DateTimeParseException e) {
+                            System.err.println("Error parsing Check_Out date: " + checkOutDate);
+                            e.printStackTrace();
+                            nod.setText("Parsing Error");
+                        }
+                    } else {
+                        LocalDate currentDate = LocalDate.now(); // Get current date
+                        cko.setText(currentDate.toString()); // Set Check_Out as current date
+                        long numberOfDays = ChronoUnit.DAYS.between(checkIn, currentDate);
+                        nod.setText(String.valueOf(numberOfDays)); // Set the total number of days (nod)
+
+                        // Calculate total payment
+                        double roomPrice = Double.parseDouble(rs.getString("r_price"));
+                        double totalPayment = numberOfDays * roomPrice;
+                        tprc.setText(String.valueOf(totalPayment));
+                    }
+
+                    
+                } else {
+                    JOptionPane.showMessageDialog(null, "Record not found");
+                }
+
+                rs.close(); // Close the ResultSet
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Error: " + ex.getMessage());
+            }
         }
+    
     }//GEN-LAST:event_p10MouseClicked
 
     private void p10MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p10MouseEntered
@@ -1110,6 +1209,10 @@ if (sess.getUid() == 0) {
         // TODO add your handling code here:
     }//GEN-LAST:event_tnmActionPerformed
 
+    private void transidActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_transidActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_transidActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1165,7 +1268,6 @@ if (sess.getUid() == 0) {
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
-    private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel20;
@@ -1190,6 +1292,8 @@ if (sess.getUid() == 0) {
     private javax.swing.JLabel jLabel38;
     private javax.swing.JLabel jLabel39;
     private javax.swing.JLabel jLabel40;
+    private javax.swing.JLabel jLabel41;
+    private javax.swing.JLabel jLabel42;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
@@ -1214,6 +1318,7 @@ if (sess.getUid() == 0) {
     public javax.swing.JTextField tid;
     public javax.swing.JTextField tnm;
     public javax.swing.JTextField tprc;
+    public javax.swing.JTextField transid;
     public javax.swing.JTextField tuid;
     private javax.swing.JLabel txtdate;
     private javax.swing.JLabel txttime;

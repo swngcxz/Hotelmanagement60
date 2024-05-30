@@ -664,91 +664,92 @@ public class adminDash extends javax.swing.JFrame {
 
     private void p3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p3MouseClicked
     dbconnect db = new dbconnect();
-int row = tableAd.getSelectedRow();
+    int row = tableAd.getSelectedRow();
 
-if (row < 0) {
-    JOptionPane.showMessageDialog(null, "Please Select");
-} else {
-    TableModel mod = tableAd.getModel();
-    try {
-        String u_id = mod.getValueAt(row, 2).toString(); // Assuming column index 2 contains u_id
+    if (row < 0) {
+        JOptionPane.showMessageDialog(null, "Please Select");
+    } else {
+        TableModel mod = tableAd.getModel();
+        try {
+            String u_id = mod.getValueAt(row, 2).toString(); // Assuming column index 2 contains u_id
 
-        // Construct the SQL query with proper syntax and concatenation
-        String sql = "SELECT t.transID, t.roomID, t.u_id, t.name, t.Contact, r.roomType, r.roomNo, r.r_price, t.Check_In, t.Check_Out, t.totalPayment, t.status, u.u_fname, u.u_image " +
-                     "FROM tbl_transaction t " +
-                     "JOIN tbl_room r ON t.roomID = r.roomID " +
-                     "JOIN tbl_user u ON t.u_id = u.u_id " +
-                     "WHERE t.u_id = '" + u_id + "'";
+            // Construct the SQL query with proper syntax and concatenation
+            String sql = "SELECT t.transID, t.roomID, t.u_id, t.name, t.Contact, r.roomType, r.roomNo, r.r_price, t.Check_In, t.Check_Out, t.totalPayment, t.status, u.u_fname, u.u_image " +
+                         "FROM tbl_transaction t " +
+                         "JOIN tbl_room r ON t.roomID = r.roomID " +
+                         "JOIN tbl_user u ON t.u_id = u.u_id " +
+                         "WHERE t.u_id = '" + u_id + "'";
 
-        ResultSet rs = db.getData(sql);
+            ResultSet rs = db.getData(sql);
 
-        if (rs.next()) {
-            // Extract data from ResultSet and set to corresponding components in checkOut frame
-            checkOut cout = new checkOut();
-            cout.tid.setText(rs.getString("transID"));
-            cout.cnm.setText(rs.getString("name"));
-            cout.cno.setText(rs.getString("Contact"));
-            cout.cki.setText(rs.getString("Check_In"));
-            cout.cko.setText(rs.getString("Check_Out"));
-            cout.rid.setText(rs.getString("roomID"));
-            cout.rtp.setText(rs.getString("roomType"));
-            cout.rno.setText(rs.getString("roomNo"));
-            cout.rp.setText(rs.getString("r_price"));
-            cout.tprc.setText(rs.getString("totalPayment"));
-            cout.tnm.setText(rs.getString("u_fname"));
-            cout.tuid.setText(rs.getString("u_id"));
+            if (rs.next()) {
+                // Extract data from ResultSet and set to corresponding components in checkOut frame
+                checkOut cout = new checkOut();
+                cout.tid.setText(rs.getString("transID"));
+                cout.cnm.setText(rs.getString("name"));
+                cout.cno.setText(rs.getString("Contact"));
+                cout.cki.setText(rs.getString("Check_In"));
+                cout.cko.setText(rs.getString("Check_Out"));
+                cout.rid.setText(rs.getString("roomID"));
+                cout.rtp.setText(rs.getString("roomType"));
+                cout.rno.setText(rs.getString("roomNo"));
+                cout.rp.setText(rs.getString("r_price"));
+                cout.tprc.setText(rs.getString("totalPayment"));
+                cout.tnm.setText(rs.getString("u_fname"));
+                cout.tuid.setText(rs.getString("u_id"));
+                cout.transid.setText(rs.getString("transID"));
 
-                        // Handle image
-          
+                            // Handle image
 
-            // Check if Check_Out is null before calculating nod (number of days)
-            String checkOutDate = rs.getString("Check_Out");
-            String checkInDate = rs.getString("Check_In").split(" ")[0]; // Extract date part
-            LocalDate checkIn = LocalDate.parse(checkInDate);
 
-            if (checkOutDate != null && !checkOutDate.isEmpty()) {
-                try {
-                    LocalDate checkOut;
-                    if (checkOutDate.length() == 10) {
-                        // If Check_Out is in the format "yyyy-MM-dd"
-                        checkOut = LocalDate.parse(checkOutDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-                    } else {
-                        // If Check_Out is in the format "yyyy-MM-dd HH:mm:ss.S"
-                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
-                        LocalDateTime checkOutDateTime = LocalDateTime.parse(checkOutDate, formatter);
-                        checkOut = checkOutDateTime.toLocalDate();
+                // Check if Check_Out is null before calculating nod (number of days)
+                String checkOutDate = rs.getString("Check_Out");
+                String checkInDate = rs.getString("Check_In").split(" ")[0]; // Extract date part
+                LocalDate checkIn = LocalDate.parse(checkInDate);
+
+                if (checkOutDate != null && !checkOutDate.isEmpty()) {
+                    try {
+                        LocalDate checkOut;
+                        if (checkOutDate.length() == 10) {
+                            // If Check_Out is in the format "yyyy-MM-dd"
+                            checkOut = LocalDate.parse(checkOutDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                        } else {
+                            // If Check_Out is in the format "yyyy-MM-dd HH:mm:ss.S"
+                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
+                            LocalDateTime checkOutDateTime = LocalDateTime.parse(checkOutDate, formatter);
+                            checkOut = checkOutDateTime.toLocalDate();
+                        }
+                        long nod = ChronoUnit.DAYS.between(checkIn, checkOut);
+                        cout.nod.setText(String.valueOf(nod)); // Set the total number of days (nod)
+                    } catch (DateTimeParseException e) {
+                        System.err.println("Error parsing Check_Out date: " + checkOutDate);
+                        e.printStackTrace();
+                        cout.nod.setText("Parsing Error");
                     }
-                    long nod = ChronoUnit.DAYS.between(checkIn, checkOut);
+                } else {
+                    LocalDate currentDate = LocalDate.now(); // Get current date
+                    cout.cko.setText(currentDate.toString()); // Set Check_Out as current date
+                    long nod = ChronoUnit.DAYS.between(checkIn, currentDate);
                     cout.nod.setText(String.valueOf(nod)); // Set the total number of days (nod)
-                } catch (DateTimeParseException e) {
-                    System.err.println("Error parsing Check_Out date: " + checkOutDate);
-                    e.printStackTrace();
-                    cout.nod.setText("Parsing Error");
-                }
-            } else {
-                LocalDate currentDate = LocalDate.now(); // Get current date
-                cout.cko.setText(currentDate.toString()); // Set Check_Out as current date
-                long nod = ChronoUnit.DAYS.between(checkIn, currentDate);
-                cout.nod.setText(String.valueOf(nod)); // Set the total number of days (nod)
 
-                // Calculate total payment
-                double roomPrice = Double.parseDouble(rs.getString("r_price"));
-                double totalPayment = nod * roomPrice;
-                cout.tprc.setText(String.valueOf(totalPayment));
+                    // Calculate total payment
+                    double roomPrice = Double.parseDouble(rs.getString("r_price"));
+                    double totalPayment = nod * roomPrice;
+                    cout.tprc.setText(String.valueOf(totalPayment));
+                }
+
+                cout.setVisible(true);
+                this.dispose();
+            } else {
+                JOptionPane.showMessageDialog(null, "Record not found");
             }
 
-            cout.setVisible(true);
-            this.dispose();
-        } else {
-            JOptionPane.showMessageDialog(null, "Record not found");
+            rs.close(); // Close the ResultSet
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error: " + ex.getMessage());
         }
-
-        rs.close(); // Close the ResultSet
-    } catch (SQLException ex) {
-        ex.printStackTrace();
-        JOptionPane.showMessageDialog(null, "Error: " + ex.getMessage());
     }
-}
 
 
    
